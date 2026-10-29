@@ -173,7 +173,10 @@ button { cursor: pointer; }
 .poi { position: absolute; left: 0; top: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--c); border: 2.5px solid #fff; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4); }
 .search-dot { background: none; border: 0; }
 .search-dot span { position: absolute; left: 0; top: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--warm); border: 3px solid #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .45); }
-.radius-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 6; }
+.radius-ring { fill: var(--accent); fill-opacity: .04; stroke: var(--accent); stroke-width: 1.5; stroke-opacity: .7; stroke-dasharray: 3 6; }
+.radius-ring.inner { fill-opacity: .12; stroke-width: 2; stroke-opacity: .95; stroke-dasharray: none; }
+.ring-wrap { background: none; border: 0; pointer-events: none; }
+.ring-label { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); white-space: nowrap; padding: 3px 10px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 1.5px solid var(--accent); font: 700 11.5px/1.2 var(--f-body); box-shadow: 0 2px 8px rgba(18, 41, 46, 0.22); }
 .leaflet-tooltip { background: var(--surface); color: var(--ink); border-color: var(--line); font-family: var(--f-body); font-size: 12.5px; box-shadow: var(--shadow); }
 .leaflet-bar a { background: var(--surface); color: var(--ink); border-bottom-color: var(--line); }
 .leaflet-bar { border: 1px solid var(--line); box-shadow: var(--shadow); }
@@ -209,9 +212,9 @@ button { cursor: pointer; }
 .s-head h2 { margin: 0; font: 700 21px/1.2 var(--f-display); text-wrap: balance; }
 .price { font: 700 30px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
 .addr { color: var(--muted); }
-.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0; }
+.specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0; }
 .specs div { background: var(--surface); padding: 9px 12px; min-width: 0; }
-.specs dt { font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.specs dt { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .specs dd { margin: 0; font: 700 16px/1.3 var(--f-display); font-variant-numeric: tabular-nums; }
 .sec h3 { margin: 0 0 8px; font: 700 15px/1.3 var(--f-display); letter-spacing: .01em; }
 .sec p { margin: 0; max-width: 62ch; }
@@ -234,6 +237,12 @@ button { cursor: pointer; }
 .feat-bar[hidden] { display: none; }
 .feat-bar button { flex: none; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.22); color: inherit; font: inherit; font-size: 12.5px; cursor: pointer; }
 .feat-bar button:hover { background: rgba(255, 255, 255, 0.34); }
+.poi-list .sk { display: flex; align-items: center; gap: 10px; padding: 14px 2px; border-bottom: 1px solid var(--line); }
+.poi-list .sk i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.poi-list .sk span { flex: 1; height: 12px; border-radius: 6px; background: var(--line); }
+.poi-list .sk em { flex: none; width: 44px; height: 12px; border-radius: 6px; background: var(--line); }
+.poi-list .sk i, .poi-list .sk span, .poi-list .sk em { animation: sk 1.2s ease-in-out infinite; }
+@keyframes sk { 50% { opacity: .45; } }
 .poi-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .poi-list li button { display: flex; width: 100%; align-items: center; gap: 10px; padding: 9px 2px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; }
 .poi-list .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
@@ -268,6 +277,7 @@ button { cursor: pointer; }
 .confirm p { margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
+  .poi-list .sk i, .poi-list .sk span, .poi-list .sk em { animation: none; }
   .pin.pulse::before { animation: none; opacity: .8; }
   .poi.on { animation: none; }
   * { transition: none !important; animation: none !important; }
@@ -284,8 +294,15 @@ button { cursor: pointer; }
 .btn.wa { background: var(--wa); border-color: var(--wa); color: var(--on-wa); }
 .btn.small { min-height: 40px; margin-top: 10px; font-size: 14px; text-decoration: none; }
 .hallazgo { align-self: flex-start; margin-bottom: 8px; padding: 4px 11px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 1px solid var(--accent); color: var(--ink); font-size: 13px; font-weight: 700; }
-.finance { margin-top: 6px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.finance small { display: block; margin-top: 2px; color: var(--muted); font-size: 11.5px; font-weight: 400; line-height: 1.35; }
+.finance { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 4px; }
+.fin-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.fin-row.rent { background: color-mix(in srgb, #f5b301 12%, var(--surface)); border-color: color-mix(in srgb, #f5b301 50%, var(--line)); }
+.fin-ic { flex: none; font-size: 24px; line-height: 1; }
+.fin-row small { display: block; color: var(--muted); font-size: 13px; line-height: 1.3; }
+.fin-row b { display: block; font: 700 21px/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
+.fin-row b span { font: 600 14px var(--f-body); color: var(--muted); }
+.fin-row em { display: block; font-style: normal; color: var(--muted); font-size: 12.5px; }
+.fin-nota { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.4; }
 .comp-btn { align-self: flex-start; margin-top: 8px; height: 34px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 .comp-btn[aria-pressed="true"] { border-color: #f5b301; background: color-mix(in srgb, #f5b301 18%, var(--surface)); }
 .comp-bar { position: absolute; z-index: 650; left: 50%; transform: translateX(-50%); bottom: calc(112px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: max-content; max-width: calc(100% - 24px); padding: 8px 10px 8px 14px; border-radius: 18px; background: var(--toast-bg); color: #fff; font-size: 14px; font-weight: 600; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); }
@@ -373,7 +390,7 @@ var CFG = {
 /* Colonias de ejemplo: posiciones aproximadas, ajustar con las reales del cliente */
 var DEMO_COLONIAS = {
   'Centro':           { c: [21.5043, -104.8947], r: 520, n: 3, t: 14000 },
-  'Ciudad del Valle': { c: [21.4866, -104.8752], r: 700, n: 1 },
+  'Ciudad del Valle': { c: [21.4866, -104.8752], r: 700, n: 1, z: 'Fraccionamiento' },
   'Lindavista':       { c: [21.5145, -104.9065], r: 600, n: 2 },
   'Mololoa':          { c: [21.4955, -104.8830], r: 500 },
   'Cuauhtémoc':       { c: [21.4990, -104.9125], r: 560 }
@@ -681,10 +698,14 @@ function specsHtml(p) {
   if (p.ban != null) s.push(['Baños', p.ban]);
   if (p.terreno) s.push(['Terreno', p.terreno + ' m²']);
   if (p.constr) s.push(['Construcción', p.constr + ' m²']);
-  if (p.est != null) s.push(['Estacionamiento', p.est]);
+  if (p.est != null) s.push(['Cochera', p.est === 0 ? 'Sin cochera' : p.est + (p.est === 1 ? ' auto' : ' autos')]);
   if (p.antig != null) s.push(['Antigüedad', p.antig === 0 ? 'Nueva' : p.antig + ' años']);
   var base = p.constr || p.terreno; if (base) s.push(['Precio por m²', mxn(Math.round(p.precio / base))]);
-  return '<dl class="specs">' + s.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>';
+  var col = COLONIAS[p.colonia] || {}, nivel = p.nivel || col.n || null;
+  s.push(['Zona', nivel ? 'Nivel ' + nivel : (col.z || 'Colonia')]);
+  s.unshift(['Tipo', p.tipo]);
+  var rest = s.length % 3, last = s.length - 1;
+  return '<dl class="specs">' + s.map(function (x, i) { return '<div' + (rest && i === last ? ' style="grid-column: span ' + (4 - rest) + '"' : '') + '><dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>';
 }
 function interesHtml(p) {
   var n = p.interesados || 0;
@@ -703,13 +724,13 @@ function fmtVence(d) {
   var hora = d.toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit' });
   return mismo ? 'hoy a las ' + hora : 'el ' + d.toLocaleDateString('es-MX', { weekday: 'long' }) + ' a las ' + hora;
 }
-function postorLink(p) { return waLink('Hola, quiero anotarme como postor de respaldo de: ' + p.titulo + ' (' + p.colonia + ', ' + mxn(p.precio) + '). ' + shareLink(p), CFG.whatsapp); }
+function postorLink(p) { return waLink('Hola, quiero anotarme en la lista de espera de: ' + p.titulo + ' (' + p.colonia + ', ' + mxn(p.precio) + '). ' + shareLink(p), CFG.whatsapp); }
 function tramiteHtml(p) {
   if (p.estatus !== 'tramite') return '';
   var t = Date.parse(p.fechaTramite || ''), vence = t ? new Date(t + CFG.tramiteHoras * 3600000) : null;
   return '<div class="aviso-tramite" role="status"><b>' + tramiteTxt(p) + '</b> Esta propiedad tiene un apartado temporal' + (vence ? ' (vence ' + fmtVence(vence) + ')' : '') +
-    '. Puedes anotarte como postor de respaldo por si el apartado no se concreta.' +
-    '<a class="btn wa small" href="' + esc(postorLink(p)) + '" target="_blank" rel="noopener" data-action="postor">📲 Anotarme como postor de respaldo</a></div>';
+    '. Puedes anotarte en la fila de espera por si el apartado actual no se concreta.' +
+    '<a class="btn wa small" href="' + esc(postorLink(p)) + '" target="_blank" rel="noopener" data-action="postor">📲 Anotarme en Lista de Espera (sin compromiso)</a></div>';
 }
 /* Insignia: precio por m² contra el tope de la zona (columna tope_m2 de Colonias) o, sin tope, contra la mediana de su colonia. */
 function hallazgo(p) {
@@ -730,23 +751,32 @@ function pmt(p) {
   var h = CFG.hipoteca, P = p.precio * (1 - h.enganche), r = h.tasaAnual / 12, n = h.anios * 12;
   return r ? P * r / (1 - Math.pow(1 + r, -n)) : P / n;
 }
+function cuotaMes(p) { return p.mensualidad || Math.round(pmt(p) / 100) * 100; }
 function financeHtml(p) {
-  var parts = [], hp = CFG.hipoteca;
-  if (p.tipo !== 'Terreno') { parts.push('💳 Hipoteca est: ' + mxn(p.mensualidad || Math.round(pmt(p) / 100) * 100) + '/mes'); }
-  if (p.renta) { parts.push('📈 Renta est: ' + mxn(p.renta) + '/mes'); }
-  if (!parts.length) return '';
-  var nota = p.mensualidad ? 'Estimación referencial.' : 'Estimación referencial: enganche ' + Math.round(hp.enganche * 100) + ' %, ' + hp.anios + ' años, ' + String(+(hp.tasaAnual * 100).toFixed(1)) + ' % anual.';
-  return '<div class="finance"><div>' + parts.join(' <span aria-hidden="true">|</span> ') + '</div><small>' + nota + ' No es una oferta de crédito.</small></div>';
+  var rows = [], hp = CFG.hipoteca;
+  if (p.tipo !== 'Terreno') {
+    rows.push('<div class="fin-row"><span class="fin-ic" aria-hidden="true">🏦</span><div><small>Adquiérela con crédito desde</small><b>' + mxn(cuotaMes(p)) + ' <span>al mes*</span></b>' + (p.mensualidad ? '' : '<em>con ' + Math.round(hp.enganche * 100) + ' % de enganche</em>') + '</div></div>');
+  }
+  if (p.renta) {
+    rows.push('<div class="fin-row rent"><span class="fin-ic" aria-hidden="true">💰</span><div><small>Si la compras para rentar, te deja</small><b>~' + mxn(p.renta) + ' <span>al mes*</span></b><em>ingreso estimado</em></div></div>');
+  }
+  return rows.length ? '<div class="finance">' + rows.join('') + '</div>' : '';
+}
+function finNota(p) {
+  if (!p.renta && p.tipo === 'Terreno') return '';
+  var hp = CFG.hipoteca;
+  return '<p class="fin-nota">* Estimaciones de referencia. ' + (p.tipo !== 'Terreno' ? 'El crédito se calcula a ' + hp.anios + ' años con ' + String(+(hp.tasaAnual * 100).toFixed(1)) + ' % de interés anual; cambia según el banco y tu perfil. ' : '') + (p.renta ? 'La renta es un ingreso estimado, no está garantizado. ' : '') + 'No es una oferta de crédito.</p>';
 }
 function compBtnHtml(p) {
   var on = state.comp.indexOf(String(p.id)) >= 0;
   return '<button type="button" class="comp-btn" data-action="comp" aria-pressed="' + on + '">' + (on ? '⭐ En mi comparativa' : '☆ Comparar') + '</button>';
 }
+function zonaTxt(p) { var c = COLONIAS[p.colonia] || {}; return (c.z || 'Colonia') + ' ' + p.colonia; }
 function hasFoto(p) { return /^https:\/\//.test(p.foto || ''); }
 function renderSheet(p) {
   var h = '';
   h += '<div class="photo" role="img" aria-label="Ilustración de ' + esc(p.tipo.toLowerCase()) + '"><svg viewBox="0 0 120 80" aria-hidden="true">' + (ICONS[p.tipo] || ICONS.Casa) + '</svg>' + (hasFoto(p) ? '<img class="photo-img" alt="Foto de la propiedad" src="' + esc(p.foto) + '">' : '<span class="photo-note">Foto de la propiedad (ejemplo)</span>') + '</div>';
-  h += '<div class="s-head">' + hallazgoHtml(p) + '<span class="kicker">' + esc(p.tipo) + ' en venta · ' + esc(p.colonia) + '</span><h2>' + esc(p.titulo) + '</h2><div class="price">' + mxn(p.precio) + ' <span class="addr" style="font:500 13px var(--f-body)">MXN</span></div>' + financeHtml(p) + '<div class="addr">' + esc(p.calle) + ', Tepic, Nayarit</div><div class="interes" id="interes">' + interesHtml(p) + '</div>' + compBtnHtml(p) + '</div>';
+  h += '<div class="s-head">' + hallazgoHtml(p) + '<span class="kicker">' + esc(p.tipo) + ' en venta · ' + esc(zonaTxt(p)) + '</span><h2>' + esc(p.titulo) + '</h2><div class="price">' + mxn(p.precio) + ' <span class="addr" style="font:500 13px var(--f-body)">MXN</span></div>' + financeHtml(p) + '<div class="addr">' + esc(p.calle) + ', Tepic, Nayarit</div><div class="interes" id="interes">' + interesHtml(p) + '</div>' + compBtnHtml(p) + '</div>';
   h += '<div id="tramite-box">' + tramiteHtml(p) + '</div>';
   h += specsHtml(p);
   h += '<section class="sec"><h3>Descripción</h3><p>' + esc(p.desc) + '</p>' +
@@ -755,6 +785,7 @@ function renderSheet(p) {
   if (p.potencial) { h += '<section class="dictamen"><h3>📐 Potencial Arquitectónico / Inversión</h3><p>' + esc(p.potencial) + '</p></section>'; }
   h += '<section class="sec"><h3>Cerca de esta propiedad</h3><p class="note" id="poi-note">Dentro de 1 km a la redonda.</p><div class="cat-chips" id="poi-cats"></div><ul class="poi-list" id="poi-list"></ul></section>';
   h += '<section class="cta" id="cta"></section>';
+  h += finNota(p);
   body.innerHTML = h;
   var im = $('.photo-img', body); if (im) { im.addEventListener('error', function () { im.remove(); }); }
   renderCta();
@@ -815,13 +846,17 @@ function overpassPois(p) {
     return out;
   });
 }
+function ringLabel(p, r, txt) {
+  L.marker([p.lat + r / 111320, p.lng], { icon: L.divIcon({ className: 'ring-wrap', html: '<span class="ring-label">' + txt + '</span>', iconSize: [0, 0] }), interactive: false, keyboard: false, zIndexOffset: -300 }).addTo(ringLayer);
+}
 function loadPois(p) {
   var token = ++state.poiToken;
   state.pois = { status: 'loading', items: [] };
   poiLayer.clearLayers(); ringLayer.clearLayers(); poiMarkers = [];
-  L.circle([p.lat, p.lng], { radius: 1000, className: 'radius-ring', interactive: false }).addTo(ringLayer);
+  L.circle([p.lat, p.lng], { radius: 1000, className: 'radius-ring outer', interactive: false }).addTo(ringLayer);
+  L.circle([p.lat, p.lng], { radius: 500, className: 'radius-ring inner', interactive: false }).addTo(ringLayer);
+  ringLabel(p, 1000, '🚗 A 1 km a la redonda'); ringLabel(p, 500, '🚶 A 5 min caminando (500 m)');
   renderPoiUi();
-  setTimeout(function () { var n = $('#poi-note'); if (token === state.poiToken && state.pois && state.pois.status === 'loading' && n) { n.textContent = 'Sigue buscando… la primera vez en cada propiedad puede tardar unos segundos.'; } }, 6000);
   var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : withTimeout(serverPois(p).catch(function () { return overpassPois(p); }), 60000));
   src.then(function (items) {
     if (token !== state.poiToken) return;
@@ -869,7 +904,7 @@ function renderPoiUi() {
   var list = $('#poi-list'), cats = $('#poi-cats'), note = $('#poi-note'); if (!list) return;
   var P = state.pois;
   poiLayer.clearLayers(); poiMarkers = []; hlLine = null; state.poiSel = null; $('#map').classList.remove('poi-focus');
-  if (P.status === 'loading') { note.textContent = 'Buscando escuelas, tiendas, parques y servicios cercanos…'; cats.innerHTML = ''; list.innerHTML = ''; return; }
+  if (P.status === 'loading') { note.textContent = 'Cargando lo que hay cerca…'; cats.innerHTML = ''; list.innerHTML = '<li class="sk" aria-hidden="true"><i></i><span></span><em></em></li>'.repeat(4); return; }
   if (P.status === 'error') { note.textContent = 'No se pudieron cargar los puntos de interés.'; cats.innerHTML = ''; list.innerHTML = '<li><button type="button" class="link-btn retry" data-action="retry-poi">Volver a intentar</button></li>'; return; }
   note.textContent = DEMO ? 'Dentro de 1 km a la redonda. Lugares de ejemplo; en la versión en línea salen de OpenStreetMap.' : 'Dentro de 1 km a la redonda, según OpenStreetMap.';
   var present = {}; P.items.forEach(function (i) { present[i.cat] = (present[i.cat] || 0) + 1; });
@@ -974,7 +1009,7 @@ function renderCta() {
   if (!state.interested[p.id]) {
     el.innerHTML = '<h3>' + (tr ? 'Esta propiedad está en trámite' : '¿Te interesa esta propiedad?') + '</h3><p class="note" style="margin:0">' +
       (tr ? 'Pregunta si se libera o pide opciones parecidas.' : 'Pide más información por teléfono o agenda una visita para conocerla.') +
-      '</p><button type="button" class="btn" data-action="interesa">Me interesa</button>' + share;
+      '</p><button type="button" class="btn" data-action="interesa">📅 Agendar visita / Pedir informes</button>' + share;
     return;
   }
   el.innerHTML = '<h3>Gracias por tu interés</h3>' +
@@ -1049,7 +1084,7 @@ sheet.addEventListener('click', function (e) {
   else if (a === 'wa-send') { if (t.getAttribute('aria-disabled') === 'true') { e.preventDefault(); var er = $('#f-err'); if (er) { er.textContent = 'Elige un día y una hora.'; } } else { track('Contact', { content_name: p.titulo, content_category: 'cita_whatsapp' }); } }
   else if (a === 'feat') { setFeat(t.getAttribute('data-v')); }
   else if (a === 'comp') { toggleComp(p.id); }
-  else if (a === 'postor') { track('Contact', { content_name: p.titulo, content_category: 'postor_respaldo' }); }
+  else if (a === 'postor') { track('Contact', { content_name: p.titulo, content_category: 'lista_espera' }); }
   else if (a === 'poi') { hlPoi(+t.getAttribute('data-i')); }
   else if (a === 'retry-poi') { loadPois(p); }
 });
@@ -1163,7 +1198,7 @@ function loadData() {
   pillBase = ''; setPill('Cargando propiedades…');
   fetch(CFG.appsScriptUrl + '?accion=datos').then(function (r) { return r.json(); }).then(function (j) {
     if (!j || !j.colonias || !j.propiedades) { throw new Error('formato'); }
-    var cols = {}; j.colonias.forEach(function (c) { cols[c.nombre] = { c: [c.lat, c.lng], r: c.radio || 500, n: c.nivel || null, t: c.tope_m2 || null }; });
+    var cols = {}; j.colonias.forEach(function (c) { cols[c.nombre] = { c: [c.lat, c.lng], r: c.radio || 500, n: c.nivel || null, t: c.tope_m2 || null, z: c.tipo_zona || null }; });
     start(cols, j.propiedades);
     if (j.avisos && j.avisos.length && window.console) { console.warn('Avisos de la hoja:', j.avisos); }
     setPill(PROPS.length ? '' : 'Todavía no hay propiedades en venta.');
