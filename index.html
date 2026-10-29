@@ -203,7 +203,12 @@ button { cursor: pointer; }
 .photo { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; background: var(--photo-bg); color: var(--accent); display: grid; place-items: center; margin-top: 36px; }
 .photo svg { width: 40%; height: auto; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .photo-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
-.interes { color: var(--accent); font-weight: 600; font-size: 14px; }
+.s-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 8px; }
+.s-actions .comp-btn { margin-top: 0; }
+.interes { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: color-mix(in srgb, #1fa85a 12%, var(--surface)); border: 1px solid color-mix(in srgb, #1fa85a 45%, var(--line)); color: var(--ink); font-weight: 600; font-size: 13px; line-height: 1.25; }
+.interes small { font-weight: 400; color: var(--muted); font-size: 12px; }
+.live-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #1fa85a; box-shadow: 0 0 0 0 rgba(31, 168, 90, .6); animation: live 1.8s ease-out infinite; }
+@keyframes live { 70% { box-shadow: 0 0 0 8px rgba(31, 168, 90, 0); } 100% { box-shadow: 0 0 0 0 rgba(31, 168, 90, 0); } }
 .interes:empty { display: none; }
 .interes b { font-variant-numeric: tabular-nums; }
 .photo-note { position: absolute; left: 10px; bottom: 8px; font-size: 11.5px; color: var(--muted); }
@@ -220,6 +225,11 @@ button { cursor: pointer; }
 .sec p { margin: 0; max-width: 62ch; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
 .tags .tag { padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
+.more-tags { margin-top: 8px; }
+.more-tags summary { cursor: pointer; color: var(--muted); font-size: 13px; padding: 4px 0; list-style: none; }
+.more-tags summary::-webkit-details-marker { display: none; }
+.more-tags summary::before { content: "+ "; font-weight: 700; }
+.more-tags[open] summary::before { content: "− "; }
 .tags .tag:hover { border-color: var(--accent); }
 .tags .tag[aria-pressed="true"], .tags.value .tag[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 .note { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
@@ -237,6 +247,7 @@ button { cursor: pointer; }
 .feat-bar[hidden] { display: none; }
 .feat-bar button { flex: none; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.22); color: inherit; font: inherit; font-size: 12.5px; cursor: pointer; }
 .feat-bar button:hover { background: rgba(255, 255, 255, 0.34); }
+.sec[hidden] { display: none; }
 .poi-list .sk { display: flex; align-items: center; gap: 10px; padding: 14px 2px; border-bottom: 1px solid var(--line); }
 .poi-list .sk i { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
 .poi-list .sk span { flex: 1; height: 12px; border-radius: 6px; background: var(--line); }
@@ -277,6 +288,7 @@ button { cursor: pointer; }
 .confirm p { margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
   .poi-list .sk i, .poi-list .sk span, .poi-list .sk em { animation: none; }
   .pin.pulse::before { animation: none; opacity: .8; }
   .poi.on { animation: none; }
@@ -294,14 +306,15 @@ button { cursor: pointer; }
 .btn.wa { background: var(--wa); border-color: var(--wa); color: var(--on-wa); }
 .btn.small { min-height: 40px; margin-top: 10px; font-size: 14px; text-decoration: none; }
 .hallazgo { align-self: flex-start; margin-bottom: 8px; padding: 4px 11px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 1px solid var(--accent); color: var(--ink); font-size: 13px; font-weight: 700; }
-.finance { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 4px; }
-.fin-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.finance { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 2px; }
+.finance:has(.fin-row:only-child) { grid-template-columns: 1fr; }
+.fin-row { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding: 9px 11px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 9%, var(--surface)); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
 .fin-row.rent { background: color-mix(in srgb, #f5b301 12%, var(--surface)); border-color: color-mix(in srgb, #f5b301 50%, var(--line)); }
-.fin-ic { flex: none; font-size: 24px; line-height: 1; }
-.fin-row small { display: block; color: var(--muted); font-size: 13px; line-height: 1.3; }
-.fin-row b { display: block; font: 700 21px/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
-.fin-row b span { font: 600 14px var(--f-body); color: var(--muted); }
-.fin-row em { display: block; font-style: normal; color: var(--muted); font-size: 12.5px; }
+.fin-ic { display: none; }
+.fin-row small { color: var(--muted); font-size: 12px; line-height: 1.25; }
+.fin-row b { font: 700 19px/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
+.fin-row b span { font: 600 12.5px var(--f-body); color: var(--muted); }
+.fin-row em { font-style: normal; color: var(--muted); font-size: 12px; line-height: 1.25; }
 .fin-nota { margin: 0; color: var(--muted); font-size: 11.5px; line-height: 1.4; }
 .comp-btn { align-self: flex-start; margin-top: 8px; height: 34px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
 .comp-btn[aria-pressed="true"] { border-color: #f5b301; background: color-mix(in srgb, #f5b301 18%, var(--surface)); }
@@ -398,7 +411,7 @@ var DEMO_COLONIAS = {
 
 /* Propiedades de ejemplo. En producción: leerlas de una Google Sheet. */
 var DEMO_PROPS = [
-  { id: 1, renta: 9500, interesados: 3, estatus: 'Disponible', potencial: 'Muros ideales para abrir claros o dividir en 2 departamentos para renta. El patio central permite ampliar.', etiquetas: ['Uso mixto / Oficinas', 'Apta crédito bancario'], alerta: { tipo: 'Cita Reciente', min: 18 }, tipo: 'Casa', colonia: 'Centro', titulo: 'Casa con patio central', calle: 'Calle Allende 214', precio: 2450000, rec: 3, ban: 2, terreno: 180, constr: 210, est: 1, antig: 25, lat: 21.5051, lng: -104.8960,
+  { id: 1, renta: 9500, visitas: 2, interesados: 3, estatus: 'Disponible', potencial: 'Muros ideales para abrir claros o dividir en 2 departamentos para renta. El patio central permite ampliar.', etiquetas: ['Uso mixto / Oficinas', 'Apta crédito bancario'], alerta: { tipo: 'Cita Reciente', min: 18 }, tipo: 'Casa', colonia: 'Centro', titulo: 'Casa con patio central', calle: 'Calle Allende 214', precio: 2450000, rec: 3, ban: 2, terreno: 180, constr: 210, est: 1, antig: 25, lat: 21.5051, lng: -104.8960,
     desc: 'Casa de techos altos y patio interior, a pocas cuadras de la plaza principal. Sirve para vivienda o para oficina.', caract: ['Patio interior', 'Cocina integral', 'Techos altos', 'Cisterna'] },
   { id: 2, interesados: 0, etiquetas: ['Apta crédito bancario'], tipo: 'Departamento', colonia: 'Centro', titulo: 'Departamento en planta alta', calle: 'Calle Morelos 87, int. 4', precio: 1350000, rec: 2, ban: 1, terreno: null, constr: 78, est: 1, antig: 8, lat: 21.5033, lng: -104.8931,
     desc: 'Departamento luminoso con balcón a la calle. Edificio de cuatro unidades con portón eléctrico.', caract: ['Balcón', 'Portón eléctrico', 'Closets', 'Tinaco nuevo'] },
@@ -428,6 +441,7 @@ function normProp(p) {
   p.caract = p.caract || []; p.etiquetas = p.etiquetas || []; p.categoria = p.categoria || [];
   p.potencial = p.potencial || ''; p.alerta = p.alerta || null;
   p.fechaTramite = p.estatus === 'tramite' ? (p.fechaTramite || p.fecha_tramite || null) : null;
+  p.visitas = p.visitas != null ? p.visitas : (p.alerta && p.alerta.visitas) || 0; p.ultima = p.ultima || (p.alerta && p.alerta.fecha) || null;
   p.nivel = p.nivel || null; p.mensualidad = p.mensualidad || null; p.renta = p.renta || null;
   return p;
 }
@@ -708,8 +722,13 @@ function specsHtml(p) {
   return '<dl class="specs">' + s.map(function (x, i) { return '<div' + (rest && i === last ? ' style="grid-column: span ' + (4 - rest) + '"' : '') + '><dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>';
 }
 function interesHtml(p) {
-  var n = p.interesados || 0;
-  return n > 0 ? '<b>' + n + '</b> ' + (n === 1 ? 'persona interesada' : 'personas interesadas') + ' en esta propiedad' : '';
+  var v = p.visitas || 0, n = p.interesados || 0;
+  if (v > 0) {
+    var u = p.ultima, dias = u ? (Date.now() - Date.parse(u)) / 86400000 : null, tx = '';
+    if (u && dias !== null && dias >= 0 && dias <= 14) { tx = dias < 1 ? 'hoy' : 'hace ' + Math.round(dias) + (Math.round(dias) === 1 ? ' día' : ' días'); }
+    return '<i class="live-dot" aria-hidden="true"></i><span><b>' + v + '</b> ' + (v === 1 ? 'visita programada' : 'visitas programadas') + ' esta semana' + (tx ? ' <small>(última consulta: ' + tx + ')</small>' : '') + '</span>';
+  }
+  return n > 0 ? '<i class="live-dot" aria-hidden="true"></i><span><b>' + n + '</b> ' + (n === 1 ? 'persona pidió informes' : 'personas pidieron informes') + '</span>' : '';
 }
 function bumpInteres(p, n) {
   p.interesados = (typeof n === 'number') ? n : (p.interesados || 0) + 1;
@@ -755,10 +774,10 @@ function cuotaMes(p) { return p.mensualidad || Math.round(pmt(p) / 100) * 100; }
 function financeHtml(p) {
   var rows = [], hp = CFG.hipoteca;
   if (p.tipo !== 'Terreno') {
-    rows.push('<div class="fin-row"><span class="fin-ic" aria-hidden="true">🏦</span><div><small>Adquiérela con crédito desde</small><b>' + mxn(cuotaMes(p)) + ' <span>al mes*</span></b>' + (p.mensualidad ? '' : '<em>con ' + Math.round(hp.enganche * 100) + ' % de enganche</em>') + '</div></div>');
+    rows.push('<div class="fin-row"><small>🏦 Adquiérela con crédito desde</small><b>' + mxn(cuotaMes(p)) + ' <span>al mes*</span></b>' + (p.mensualidad ? '' : '<em>con ' + Math.round(hp.enganche * 100) + ' % de enganche</em>') + '</div>');
   }
   if (p.renta) {
-    rows.push('<div class="fin-row rent"><span class="fin-ic" aria-hidden="true">💰</span><div><small>Si la compras para rentar, te deja</small><b>~' + mxn(p.renta) + ' <span>al mes*</span></b><em>ingreso estimado</em></div></div>');
+    rows.push('<div class="fin-row rent"><small>💰 Si la compras para rentar, te deja</small><b>~' + mxn(p.renta) + ' <span>al mes*</span></b><em>ingreso estimado</em></div>');
   }
   return rows.length ? '<div class="finance">' + rows.join('') + '</div>' : '';
 }
@@ -771,19 +790,27 @@ function compBtnHtml(p) {
   var on = state.comp.indexOf(String(p.id)) >= 0;
   return '<button type="button" class="comp-btn" data-action="comp" aria-pressed="' + on + '">' + (on ? '⭐ En mi comparativa' : '☆ Comparar') + '</button>';
 }
+function zonaCorta(p) { var c = COLONIAS[p.colonia] || {}, z = c.z || 'Colonia'; return (z === 'Colonia' ? 'Col.' : z === 'Fraccionamiento' ? 'Fracc.' : z) + ' ' + p.colonia; }
+/* Solo para los datos de ejemplo: con la hoja real el desplazamiento lo hace el Apps Script. */
+function ocultarPos(p, cols) {
+  var c = cols[p.colonia], h = hash(String(p.id)), a = (h % 3600) / 3600 * 2 * Math.PI, d = 120 + ((h >>> 12) % 181);
+  var la = p.lat + d * Math.cos(a) / 111320, lo = p.lng + d * Math.sin(a) / (111320 * Math.cos(p.lat * Math.PI / 180));
+  if (c) { var max = c.r * 0.85, dd = hav(c.c, [la, lo]); if (dd > max) { var k = max / dd; la = c.c[0] + (la - c.c[0]) * k; lo = c.c[1] + (lo - c.c[1]) * k; } }
+  p.lat = la; p.lng = lo;
+}
 function zonaTxt(p) { var c = COLONIAS[p.colonia] || {}; return (c.z || 'Colonia') + ' ' + p.colonia; }
 function hasFoto(p) { return /^https:\/\//.test(p.foto || ''); }
 function renderSheet(p) {
   var h = '';
   h += '<div class="photo" role="img" aria-label="Ilustración de ' + esc(p.tipo.toLowerCase()) + '"><svg viewBox="0 0 120 80" aria-hidden="true">' + (ICONS[p.tipo] || ICONS.Casa) + '</svg>' + (hasFoto(p) ? '<img class="photo-img" alt="Foto de la propiedad" src="' + esc(p.foto) + '">' : '<span class="photo-note">Foto de la propiedad (ejemplo)</span>') + '</div>';
-  h += '<div class="s-head">' + hallazgoHtml(p) + '<span class="kicker">' + esc(p.tipo) + ' en venta · ' + esc(zonaTxt(p)) + '</span><h2>' + esc(p.titulo) + '</h2><div class="price">' + mxn(p.precio) + ' <span class="addr" style="font:500 13px var(--f-body)">MXN</span></div>' + financeHtml(p) + '<div class="addr">' + esc(p.calle) + ', Tepic, Nayarit</div><div class="interes" id="interes">' + interesHtml(p) + '</div>' + compBtnHtml(p) + '</div>';
+  h += '<div class="s-head">' + hallazgoHtml(p) + '<span class="kicker">' + esc(p.tipo) + ' en venta · ' + esc(zonaTxt(p)) + '</span><h2>' + esc(p.titulo) + '</h2><div class="price">' + mxn(p.precio) + ' <span class="addr" style="font:500 13px var(--f-body)">MXN</span></div>' + financeHtml(p) + '<div class="s-actions"><div class="interes" id="interes">' + interesHtml(p) + '</div>' + compBtnHtml(p) + '</div></div>';
   h += '<div id="tramite-box">' + tramiteHtml(p) + '</div>';
   h += specsHtml(p);
   h += '<section class="sec"><h3>Descripción</h3><p>' + esc(p.desc) + '</p>' +
     (p.etiquetas.length ? '<ul class="tags value" aria-label="Etiquetas de valor. Toca una para filtrar el mapa">' + p.etiquetas.map(tagHtml).join('') + '</ul>' : '') +
-    (p.caract.length ? '<ul class="tags" aria-label="Características. Toca una para filtrar el mapa">' + p.caract.map(tagHtml).join('') + '</ul>' : '') + '</section>';
+    (p.caract.length ? '<details class="more-tags"' + (state.feat && p.caract.some(function (c) { return norm(c) === state.feat.key; }) ? ' open' : '') + '><summary>Ver todas las características (' + p.caract.length + ')</summary><ul class="tags" aria-label="Características. Toca una para ver en el mapa las propiedades que la tienen">' + p.caract.map(tagHtml).join('') + '</ul></details>' : '') + '</section>';
   if (p.potencial) { h += '<section class="dictamen"><h3>📐 Potencial Arquitectónico / Inversión</h3><p>' + esc(p.potencial) + '</p></section>'; }
-  h += '<section class="sec"><h3>Cerca de esta propiedad</h3><p class="note" id="poi-note">Dentro de 1 km a la redonda.</p><div class="cat-chips" id="poi-cats"></div><ul class="poi-list" id="poi-list"></ul></section>';
+  h += '<section class="sec" id="poi-sec"><h3>Cerca de esta propiedad</h3><p class="note" id="poi-note">Dentro de 1 km a la redonda.</p><div class="cat-chips" id="poi-cats"></div><ul class="poi-list" id="poi-list"></ul></section>';
   h += '<section class="cta" id="cta"></section>';
   h += finNota(p);
   body.innerHTML = h;
@@ -857,7 +884,7 @@ function loadPois(p) {
   L.circle([p.lat, p.lng], { radius: 500, className: 'radius-ring inner', interactive: false }).addTo(ringLayer);
   ringLabel(p, 1000, '🚗 A 1 km a la redonda'); ringLabel(p, 500, '🚶 A 5 min caminando (500 m)');
   renderPoiUi();
-  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : withTimeout(serverPois(p).catch(function () { return overpassPois(p); }), 60000));
+  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : (useServer ? withTimeout(serverPois(p), 60000) : overpassPois(p)));
   src.then(function (items) {
     if (token !== state.poiToken) return;
     items = items.filter(function (i) { return CATS[i.cat] && isFinite(i.lat) && isFinite(i.lng); });
@@ -870,6 +897,7 @@ function loadPois(p) {
     if (token !== state.poiToken) return;
     state.pois = { status: 'error', items: [] };
     renderPoiUi();
+    if (!p._reint) { p._reint = true; setTimeout(function () { if (state.sel === p) { loadPois(p); } }, 5000); }
   });
 }
 function poiTip(i) { return esc(i.name) + ' · ' + fmtDist(i.dist); }
@@ -901,11 +929,12 @@ function hlPoi(idx) {
   map.fitBounds(L.latLngBounds([[p.lat, p.lng], [it.lat, it.lng]]), { paddingTopLeft: [50, 84], paddingBottomRight: [pad[0] + 50, pad[1] + 50], maxZoom: 17 });
 }
 function renderPoiUi() {
-  var list = $('#poi-list'), cats = $('#poi-cats'), note = $('#poi-note'); if (!list) return;
+  var list = $('#poi-list'), cats = $('#poi-cats'), note = $('#poi-note'), sec = $('#poi-sec'); if (!list) return;
   var P = state.pois;
+  if (sec) { sec.hidden = P.status === 'error' || (P.status === 'ok' && !P.items.length); }
   poiLayer.clearLayers(); poiMarkers = []; hlLine = null; state.poiSel = null; $('#map').classList.remove('poi-focus');
   if (P.status === 'loading') { note.textContent = 'Cargando lo que hay cerca…'; cats.innerHTML = ''; list.innerHTML = '<li class="sk" aria-hidden="true"><i></i><span></span><em></em></li>'.repeat(4); return; }
-  if (P.status === 'error') { note.textContent = 'No se pudieron cargar los puntos de interés.'; cats.innerHTML = ''; list.innerHTML = '<li><button type="button" class="link-btn retry" data-action="retry-poi">Volver a intentar</button></li>'; return; }
+  if (P.status === 'error') { note.textContent = ''; cats.innerHTML = ''; list.innerHTML = ''; return; }
   note.textContent = DEMO ? 'Dentro de 1 km a la redonda. Lugares de ejemplo; en la versión en línea salen de OpenStreetMap.' : 'Dentro de 1 km a la redonda, según OpenStreetMap.';
   var present = {}; P.items.forEach(function (i) { present[i.cat] = (present[i.cat] || 0) + 1; });
   cats.innerHTML = Object.keys(CATS).filter(function (k) { return present[k]; }).map(function (k) {
@@ -993,14 +1022,14 @@ function viewContent(p) {
 /* ============ ME INTERESA, LLAMAR, AGENDAR POR WHATSAPP ============ */
 function waLink(text, num) { return 'https://wa.me/' + (num || '') + '?text=' + encodeURIComponent(text); }
 function shareLink(p) { return location.href.split('#')[0] + '#' + encodeURIComponent(p.id); }
-function shareText(p) { return 'Mira esta propiedad en ' + p.colonia + ', Tepic: ' + p.titulo + ' (' + p.calle + '), ' + mxn(p.precio) + '. ' + shareLink(p); }
+function shareText(p) { return 'Mira esta propiedad en ' + p.colonia + ', Tepic: ' + p.titulo + ' (' + zonaCorta(p) + '), ' + mxn(p.precio) + '. ' + shareLink(p); }
 function citaText(p, f) {
   var d = fromIso(f.fecha).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
   var h = f.hora.replace(/^0/, '');
   if (p.estatus === 'tramite') {
-    return 'Hola, vi que "' + p.titulo + '" (' + p.calle + ', ' + p.colonia + ') está apartada. Quiero saber si se libera o ver opciones parecidas. Me gustaría agendar visita el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
+    return 'Hola, vi que "' + p.titulo + '" (' + zonaCorta(p) + ') está apartada. Quiero saber si se libera o ver opciones parecidas. Me gustaría agendar visita el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
   }
-  return 'Hola, quiero confirmar cita para ver la propiedad "' + p.titulo + '" (' + p.calle + ', ' + p.colonia + ') el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
+  return 'Hola, quiero confirmar cita para ver la propiedad "' + p.titulo + '" (' + zonaCorta(p) + ') el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
 }
 function renderCta() {
   var p = state.sel, el = $('#cta'); if (!el || !p) return;
@@ -1036,7 +1065,7 @@ function fetchBusy(iso) {
 function renderForm() {
   var p = state.sel, box = $('#cita-box'); if (!box || !p) return;
   var f = state.form, days = openDays();
-  box.innerHTML = '<div class="form"><h4>Elige día y hora</h4><p class="note" style="margin:0">' + esc(p.titulo) + ' · ' + esc(p.calle) + '</p>' +
+  box.innerHTML = '<div class="form"><h4>Elige día y hora</h4><p class="note" style="margin:0">' + esc(p.titulo) + ' · ' + esc(zonaCorta(p)) + '</p>' +
     '<fieldset><legend>Día</legend><div class="pick">' + days.map(function (d) {
       var iso = isoDate(d);
       return '<button type="button" class="opt" data-action="date" data-v="' + iso + '" aria-pressed="' + (f.fecha === iso) + '">' + esc(d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' })) + '</button>';
@@ -1210,6 +1239,7 @@ else {
   DEMO_PROPS.forEach(function (p) { if (p.tramiteMin != null) { p.fechaTramite = new Date(Date.now() - p.tramiteMin * 60000).toISOString(); } });
   DEMO_PROPS.forEach(function (p) { if (p.alerta && p.alerta.min != null) { p.alerta.fecha = new Date(Date.now() - p.alerta.min * 60000).toISOString(); } });
   pillBase = DEMO ? 'Demostración: propiedades, precios y avisos de ejemplo' : 'Datos de ejemplo. Falta conectar la hoja de Google.';
+  DEMO_PROPS.forEach(function (p) { ocultarPos(p, DEMO_COLONIAS); });
   start(DEMO_COLONIAS, DEMO_PROPS);
   setPill(pillBase);
   /* Datos de ejemplo: a los 20 s se aparta la propiedad 2 para enseñar el efecto en vivo (con la hoja real, esto lo dispara un cambio real). */
