@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa de Propiedades Tepic</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;-webkit-tap-highlight-color:transparent}
+.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.leaflet-marker-icon,.leaflet-marker-shadow{display:block}
+.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
+.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-tile{max-width:none!important;max-height:none!important;width:auto;padding:0}
+.leaflet-container.leaflet-touch-zoom{touch-action:pan-x pan-y}
+.leaflet-container.leaflet-touch-drag{touch-action:pinch-zoom}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{touch-action:none}
+.leaflet-tile{filter:inherit;visibility:hidden}
+.leaflet-tile-loaded{visibility:inherit}
+.leaflet-zoom-box{width:0;height:0;box-sizing:border-box;z-index:800}
+.leaflet-pane{z-index:400}
+.leaflet-tile-pane{z-index:200}
+.leaflet-overlay-pane{z-index:400}
+.leaflet-shadow-pane{z-index:500}
+.leaflet-marker-pane{z-index:600}
+.leaflet-tooltip-pane{z-index:650}
+.leaflet-popup-pane{z-index:700}
+.leaflet-map-pane canvas{z-index:100}
+.leaflet-map-pane svg{z-index:200}
+.leaflet-control{position:relative;z-index:800;pointer-events:auto;float:left;clear:both}
+.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+.leaflet-right .leaflet-control{float:right;margin-right:10px}
+.leaflet-top .leaflet-control{margin-top:10px}
+.leaflet-bottom .leaflet-control{margin-bottom:10px}
+.leaflet-left .leaflet-control{margin-left:10px}
+.leaflet-zoom-animated{transform-origin:0 0}
+svg.leaflet-zoom-animated{will-change:transform}
+.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}
+.leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile{transition:none}
+.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}
+.leaflet-interactive{cursor:pointer}
+.leaflet-grab{cursor:grab}
+.leaflet-dragging .leaflet-grab{cursor:move}
+.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-image-layer,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}
+.leaflet-marker-icon.leaflet-interactive,.leaflet-image-layer.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive{pointer-events:auto}
+.leaflet-container{background:#ddd;outline-offset:1px}
+.leaflet-bar{border-radius:4px}
+.leaflet-bar a{display:block;text-align:center;text-decoration:none;width:30px;height:30px;line-height:30px;background:#fff;color:#000;border-bottom:1px solid #ccc}
+.leaflet-bar a:last-child{border-bottom:0}
+.leaflet-control-zoom-in,.leaflet-control-zoom-out{font:bold 18px 'Lucida Console',Monaco,monospace;text-indent:1px}
+.leaflet-control-attribution{margin:0}
+.leaflet-control-attribution a{text-decoration:none}
+.leaflet-tooltip{position:absolute;padding:6px;background:#fff;border:1px solid #fff;border-radius:3px;color:#222;white-space:nowrap;user-select:none;pointer-events:none;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.leaflet-tooltip.leaflet-interactive{cursor:pointer;pointer-events:auto}
+
+/* Layout: mapa a pantalla completa; búsqueda y colonias flotan arriba; la ficha sube desde abajo en teléfono y se queda a la derecha en pantalla grande. */
+:root {
+  --bg: #eef2ef;
+  --surface: #fbfcfb;
+  --ink: #12292e;
+  --muted: #587074;
+  --line: #d3ddd9;
+  --accent: #0e6a5a;
+  --on-accent: #ffffff;
+  --warm: #c4501b;
+  --on-warm: #ffffff;
+  --wa: #15803d;
+  --on-wa: #ffffff;
+  --toast-bg: rgba(14, 30, 34, 0.93);
+  --map-bg: #e3eae6;
+  --grid: rgba(18, 41, 46, 0.06);
+  --photo-bg: #dbe8e3;
+  --shadow: 0 6px 22px rgba(18, 41, 46, 0.18);
+  --tile-filter: none;
+  --f-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --f-body: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1c1f; --surface: #172a2e; --ink: #e6efec; --muted: #93aaa6; --line: #2a4146;
+    --accent: #46c9ad; --on-accent: #06231d; --warm: #f29a63; --on-warm: #2a1204; --wa: #3ccf7a; --on-wa: #052a15;
+    --map-bg: #12262a; --grid: rgba(230, 239, 236, 0.06); --photo-bg: #1f3a3d;
+    --shadow: 0 6px 22px rgba(0, 0, 0, 0.5); --tile-filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.85) saturate(.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1c1f; --surface: #172a2e; --ink: #e6efec; --muted: #93aaa6; --line: #2a4146;
+  --accent: #46c9ad; --on-accent: #06231d; --warm: #f29a63; --on-warm: #2a1204; --wa: #3ccf7a; --on-wa: #052a15;
+  --map-bg: #12262a; --grid: rgba(230, 239, 236, 0.06); --photo-bg: #1f3a3d;
+  --shadow: 0 6px 22px rgba(0, 0, 0, 0.5); --tile-filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.85) saturate(.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.45; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { position: relative; height: 100%; overflow: hidden; }
+#map { position: absolute; inset: 0; z-index: 0; background-color: var(--map-bg); }
+.leaflet-container { background: var(--map-bg); font-family: var(--f-body); }
+.leaflet-tile-pane { filter: var(--tile-filter); }
+.demo-grid .leaflet-container {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Barra superior */
+.topbar { position: absolute; top: 0; left: 0; right: 0; z-index: 500; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; pointer-events: none; }
+.topbar > * { pointer-events: auto; }
+.search { position: relative; z-index: 3; margin-left: var(--gutter-l); margin-right: var(--gutter-r); }
+.search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+.search input { width: 100%; height: 48px; padding: 0 14px 0 42px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); font-size: 16px; }
+.search input::placeholder { color: var(--muted); }
+.sug { position: absolute; top: 54px; left: 0; right: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.sug button { display: flex; width: 100%; flex-direction: column; align-items: flex-start; gap: 1px; padding: 10px 14px; border: 0; background: none; text-align: left; border-bottom: 1px solid var(--line); }
+.sug button:last-child { border-bottom: 0; }
+.sug button:hover, .sug button:focus-visible { background: var(--bg); }
+.sug .s-sub, .sug .s-none { color: var(--muted); font-size: 13px; }
+.sug .s-none { padding: 12px 14px; }
+.chips-wrap { position: relative; }
+.chips { position: relative; display: flex; gap: 8px; overflow-x: auto; overscroll-behavior-x: contain; padding: 2px var(--gutter-r) 6px var(--gutter-l); scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 34px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 34px), transparent 100%); }
+.chips.drag { user-select: none; }
+.chips.drag .chip { pointer-events: none; }
+@media (hover: hover) { .chips { cursor: grab; } .chips.drag { cursor: grabbing; } .chip { cursor: pointer; } }
+.chips-nav { position: absolute; top: 0; z-index: 2; display: none; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-shadow: 0 2px 8px rgba(18, 41, 46, 0.2); }
+.chips-nav svg { width: 16px; height: 16px; }
+.chips-nav.prev { left: var(--gutter-l); }
+.chips-nav.next { right: var(--gutter-r); }
+@media (hover: hover) and (pointer: fine) { .chips-nav { display: grid; } }
+.chips-nav[hidden] { display: none !important; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; height: 34px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); box-shadow: 0 2px 8px rgba(18, 41, 46, 0.12); font-weight: 600; font-size: 13.5px; white-space: nowrap; }
+.chip b { font-weight: 600; color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.chip[aria-pressed="true"] b { color: inherit; opacity: .85; }
+
+.pill { position: absolute; left: var(--gutter-l); bottom: 14px; z-index: 450; max-width: calc(100% - 100px); padding: 6px 11px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: 12px; box-shadow: 0 2px 8px rgba(18, 41, 46, 0.12); }
+
+/* Mapa: colonias, pines y puntos de interés */
+.col-area { fill: var(--accent); fill-opacity: .07; stroke: var(--accent); stroke-opacity: .45; stroke-width: 1.5; stroke-dasharray: 5 6; }
+.col-area.on { fill-opacity: .16; stroke-opacity: .9; stroke-dasharray: none; }
+.col-label { background: none; border: 0; }
+.col-btn { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); padding: 3px 9px; border: 0; border-radius: 6px; background: transparent; color: var(--accent); font: 700 11.5px/1.2 var(--f-body); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 4px var(--surface), 0 0 4px var(--surface), 0 0 8px var(--surface); }
+.pin-wrap { background: none; border: 0; }
+.pin { position: absolute; left: 0; top: 0; transform: translate(-50%, calc(-100% - 7px)); padding: 4px 10px; border-radius: 999px; background: var(--surface); color: var(--ink); border: 2px solid var(--accent); font: 700 12.5px/1.2 var(--f-body); font-variant-numeric: tabular-nums; white-space: nowrap; box-shadow: 0 3px 10px rgba(18, 41, 46, 0.28); }
+.pin::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; transform: translateX(-50%); }
+.pin.sel { background: var(--accent); color: var(--on-accent); border-color: var(--accent); transform: translate(-50%, calc(-100% - 7px)) scale(1.1); }
+.pin.sel::after { background: var(--accent); }
+.pin.tramite { background: var(--warm); color: var(--on-warm); border-color: var(--warm); }
+.pin.tramite::after { background: var(--warm); }
+.pin.tramite.sel { background: var(--warm); color: var(--on-warm); border-color: var(--warm); box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--warm); }
+.poi-wrap { background: none; border: 0; }
+.poi { position: absolute; left: 0; top: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--c); border: 2.5px solid #fff; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4); }
+.search-dot { background: none; border: 0; }
+.search-dot span { position: absolute; left: 0; top: 0; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--warm); border: 3px solid #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .45); }
+.radius-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 6; }
+.leaflet-tooltip { background: var(--surface); color: var(--ink); border-color: var(--line); font-family: var(--f-body); font-size: 12.5px; box-shadow: var(--shadow); }
+.leaflet-bar a { background: var(--surface); color: var(--ink); border-bottom-color: var(--line); }
+.leaflet-bar { border: 1px solid var(--line); box-shadow: var(--shadow); }
+.leaflet-control-attribution { background: color-mix(in srgb, var(--surface) 88%, transparent); color: var(--muted); font-size: 11px; padding: 1px 6px; }
+.leaflet-control-attribution a { color: var(--accent); }
+@media (max-width: 899px) { .leaflet-control-zoom { display: none; } }
+
+/* Ficha de la propiedad */
+.sheet { position: absolute; z-index: 600; left: 0; right: 0; bottom: 0; height: 66%; display: flex; flex-direction: column; background: var(--surface); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 30px rgba(18, 41, 46, 0.25); visibility: hidden; transform: translateY(105%); transition: transform .28s ease, visibility 0s linear .28s; outline: none; }
+.sheet.open { visibility: visible; transform: none; transition: transform .28s ease; }
+.sheet .close { position: absolute; z-index: 2; top: 10px; right: var(--gutter-r); width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); box-shadow: 0 2px 8px rgba(18, 41, 46, 0.18); }
+.sheet .close svg { width: 16px; height: 16px; }
+.sheet-body > * { flex: none; }
+.sheet-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 14px var(--gutter-r) 34px var(--gutter-l); display: flex; flex-direction: column; gap: 18px; }
+@media (min-width: 900px) {
+  .topbar { right: auto; width: min(860px, 100%); }
+  .search { max-width: 560px; }
+  .app.has-sheet .topbar { width: min(860px, calc(100% - 468px)); }
+  .sheet { left: auto; top: 16px; right: 16px; bottom: 16px; width: 420px; height: auto; border-radius: 20px; transform: translateX(115%); transition: transform .28s ease, visibility 0s linear .28s; }
+  .sheet.open { transform: none; }
+  .sheet-body { padding-bottom: 28px; }
+  .pill { bottom: 14px; }
+}
+.photo { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 14px; background: var(--photo-bg); color: var(--accent); display: grid; place-items: center; margin-top: 36px; }
+.photo svg { width: 40%; height: auto; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.photo-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+.interes { color: var(--accent); font-weight: 600; font-size: 14px; }
+.interes:empty { display: none; }
+.interes b { font-variant-numeric: tabular-nums; }
+.photo-note { position: absolute; left: 10px; bottom: 8px; font-size: 11.5px; color: var(--muted); }
+.kicker { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.s-head { display: flex; flex-direction: column; gap: 4px; }
+.s-head h2 { margin: 0; font: 700 21px/1.2 var(--f-display); text-wrap: balance; }
+.price { font: 700 30px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.addr { color: var(--muted); }
+.specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0; }
+.specs div { background: var(--surface); padding: 9px 12px; min-width: 0; }
+.specs dt { font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.specs dd { margin: 0; font: 700 16px/1.3 var(--f-display); font-variant-numeric: tabular-nums; }
+.sec h3 { margin: 0 0 8px; font: 700 15px/1.3 var(--f-display); letter-spacing: .01em; }
+.sec p { margin: 0; max-width: 62ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; list-style: none; }
+.tags .tag { padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 13px; cursor: pointer; }
+.tags .tag:hover { border-color: var(--accent); }
+.tags .tag[aria-pressed="true"], .tags.value .tag[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.note { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.cat { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 13px; font-weight: 600; }
+.cat i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.poi-list li button[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 14%, var(--surface)); box-shadow: inset 3px 0 0 var(--c); font-weight: 600; }
+.poi-list li button { cursor: pointer; }
+.poi { transition: transform .2s ease, opacity .2s ease; }
+.poi-focus .poi:not(.on) { opacity: .4; }
+.poi.on { transform: scale(1.6); z-index: 5; box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 35%, transparent), 0 2px 8px rgba(0, 0, 0, 0.45); animation: poi-pulse 1.6s ease-out infinite; }
+@keyframes poi-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 60%, transparent), 0 2px 8px rgba(0, 0, 0, 0.45); } 100% { box-shadow: 0 0 0 16px color-mix(in srgb, var(--c) 0%, transparent), 0 2px 8px rgba(0, 0, 0, 0.45); } }
+.leaflet-tooltip.poi-tip { font-weight: 700; border-color: var(--accent); }
+.feat-bar { position: absolute; left: var(--gutter-l); top: 118px; z-index: 440; display: flex; align-items: center; gap: 8px; max-width: calc(100% - 28px); padding: 5px 6px 5px 13px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font: 600 13px/1.2 var(--f-body); box-shadow: 0 3px 10px rgba(18, 41, 46, 0.28); }
+.feat-bar[hidden] { display: none; }
+.feat-bar button { flex: none; height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.22); color: inherit; font: inherit; font-size: 12.5px; cursor: pointer; }
+.feat-bar button:hover { background: rgba(255, 255, 255, 0.34); }
+.poi-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.poi-list li button { display: flex; width: 100%; align-items: center; gap: 10px; padding: 9px 2px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left; }
+.poi-list .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.poi-list .nm { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.poi-list .ds { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.retry { margin-top: 6px; }
+
+/* Me interesa / llamar / agendar */
+.cta { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); }
+.cta h3 { margin: 0; font: 700 17px/1.25 var(--f-display); }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px; border-radius: 12px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 16px; text-decoration: none; text-align: center; }
+.btn.alt { background: transparent; color: var(--accent); }
+.btn-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.phone-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.phone-line span { font: 700 18px var(--f-display); font-variant-numeric: tabular-nums; user-select: all; }
+.link-btn { border: 0; background: none; padding: 6px 2px; color: var(--accent); font-weight: 600; text-decoration: underline; }
+.form { display: flex; flex-direction: column; gap: 12px; padding-top: 6px; border-top: 1px solid var(--line); }
+.form h4 { margin: 8px 0 0; font: 700 16px var(--f-display); }
+.form label { display: block; font-weight: 600; font-size: 13.5px; margin-bottom: 4px; }
+.form input[type="text"], .form input[type="email"], .form input[type="tel"] { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 16px; }
+.form fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.form legend { font-weight: 600; font-size: 13.5px; margin-bottom: 6px; padding: 0; }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { min-height: 40px; padding: 0 13px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-weight: 600; font-variant-numeric: tabular-nums; }
+.opt[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.opt:disabled { opacity: .45; text-decoration: line-through; cursor: not-allowed; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400 !important; font-size: 13.5px !important; }
+.check input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.err { margin: 0; min-height: 1.2em; color: var(--warm); font-weight: 600; font-size: 13.5px; }
+.confirm { padding: 14px; border-radius: 12px; background: var(--surface); border: 1.5px solid var(--accent); display: flex; flex-direction: column; gap: 4px; }
+.confirm h4 { margin: 0; font: 700 17px var(--f-display); color: var(--accent); }
+.confirm p { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .poi.on { animation: none; }
+  * { transition: none !important; animation: none !important; }
+}
+
+.chip-tramite[aria-pressed="false"] { border-color: var(--warm); }
+.chip-tramite[aria-pressed="true"] { background: var(--warm); border-color: var(--warm); color: var(--on-warm); }
+.tags.value .tag { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--ink); font-weight: 600; }
+.dictamen { padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border: 1.5px solid var(--accent); }
+.dictamen h3 { margin: 0 0 6px; font: 700 15px/1.3 var(--f-display); color: var(--accent); }
+.dictamen p { margin: 0; max-width: 62ch; }
+.aviso-tramite { padding: 10px 14px; border-radius: 12px; background: color-mix(in srgb, var(--warm) 14%, var(--surface)); border: 1.5px solid var(--warm); font-size: 14px; }
+.aviso-tramite b { color: var(--warm); margin-right: 4px; }
+.btn.wa { background: var(--wa); border-color: var(--wa); color: var(--on-wa); }
+.btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+.toast { position: absolute; z-index: 550; left: 50%; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 14px); opacity: 0; display: flex; align-items: stretch; width: max-content; max-width: min(560px, calc(100% - 32px)); background: var(--toast-bg); color: #eef5f2; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: opacity .3s ease, transform .3s ease; pointer-events: none; }
+.toast.in { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.toast[hidden] { display: none !important; }
+.toast-go { flex: 1; min-width: 0; padding: 11px 6px 11px 14px; border: 0; background: none; color: inherit; text-align: left; font-size: 14px; line-height: 1.4; }
+.toast-cta { display: block; margin-top: 3px; font-weight: 700; color: #7fe0c6; text-decoration: underline; }
+.toast-x { flex: none; width: 38px; border: 0; background: none; color: #b9cac5; display: grid; place-items: center; }
+.toast-x svg { width: 14px; height: 14px; }
+@media (min-width: 900px) { .toast { bottom: 22px; } .app.has-sheet .toast { left: calc(50% - 226px); } }
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div id="map" role="region" aria-label="Mapa de propiedades en venta"></div>
+
+  <header class="topbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Busca colonia, calle o propiedad" autocomplete="off" enterkeyhint="search" aria-label="Buscar colonia, calle o propiedad" aria-controls="sug">
+      <div id="sug" class="sug" hidden></div>
+    </div>
+    <div class="chips-wrap">
+      <button type="button" class="chips-nav prev" aria-label="Ver colonias anteriores" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <div id="chips" class="chips" role="group" aria-label="Filtrar por colonia"></div>
+      <button type="button" class="chips-nav next" aria-label="Ver más colonias" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+    </div>
+  </header>
+
+  <div id="feat-bar" class="feat-bar" hidden><span id="feat-txt"></span><button type="button" id="feat-x">Quitar filtro</button></div>
+
+  <div id="demo-pill" class="pill" hidden>Demostración: propiedades, precios y posiciones de ejemplo</div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden>
+    <button type="button" class="toast-go" id="toast-go"><span id="toast-txt"></span><span class="toast-cta">Ver ficha</span></button>
+    <button type="button" class="toast-x" aria-label="Cerrar aviso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+
+  <aside id="sheet" class="sheet" aria-label="Detalle de la propiedad" tabindex="-1">
+    <button type="button" class="close" data-action="close" aria-label="Cerrar ficha">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+    </button>
+    <div id="sheet-body" class="sheet-body"></div>
+  </aside>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+'use strict';
+
+/* ============ CONFIGURACIÓN (lo que la inmobiliaria cambia) ============ */
+var DEMO = false;           // true = sin internet externo (datos de ejemplo); false = OpenStreetMap real
+var CFG = {
+  nombre: 'Inmobiliaria Ejemplo',
+  telefono: '311 000 0000',    // número que se muestra
+  telefonoTel: '+523110000000',// mismo número para el botón Llamar
+  whatsapp: '523110000000',    // WhatsApp de la inmobiliaria: 52 + 10 dígitos, sin espacios ni signos
+  appsScriptUrl: '',           // URL de la app web de Google Apps Script (ver apps-script-citas.gs)
+  centro: [21.5043, -104.8947],// Tepic
+  zoom: 13
+};
+
+/* Colonias de ejemplo: posiciones aproximadas, ajustar con las reales del cliente */
+var DEMO_COLONIAS = {
+  'Centro':           { c: [21.5043, -104.8947], r: 520 },
+  'Ciudad del Valle': { c: [21.4866, -104.8752], r: 700 },
+  'Lindavista':       { c: [21.5145, -104.9065], r: 600 },
+  'Mololoa':          { c: [21.4955, -104.8830], r: 500 },
+  'Cuauhtémoc':       { c: [21.4990, -104.9125], r: 560 }
+};
+
+/* Propiedades de ejemplo. En producción: leerlas de una Google Sheet. */
+var DEMO_PROPS = [
+  { id: 1, interesados: 3, estatus: 'Disponible', potencial: 'Muros ideales para abrir claros o dividir en 2 departamentos para renta. El patio central permite ampliar.', etiquetas: ['Uso mixto / Oficinas', 'Apta crédito bancario'], alerta: { tipo: 'Cita Reciente', min: 18 }, tipo: 'Casa', colonia: 'Centro', titulo: 'Casa con patio central', calle: 'Calle Allende 214', precio: 2450000, rec: 3, ban: 2, terreno: 180, constr: 210, est: 1, antig: 25, lat: 21.5051, lng: -104.8960,
+    desc: 'Casa de techos altos y patio interior, a pocas cuadras de la plaza principal. Sirve para vivienda o para oficina.', caract: ['Patio interior', 'Cocina integral', 'Techos altos', 'Cisterna'] },
+  { id: 2, interesados: 0, estatus: 'En Trámite', etiquetas: ['Apta crédito bancario'], alerta: { tipo: 'En Trámite', min: 95 }, tipo: 'Departamento', colonia: 'Centro', titulo: 'Departamento en planta alta', calle: 'Calle Morelos 87, int. 4', precio: 1350000, rec: 2, ban: 1, terreno: null, constr: 78, est: 1, antig: 8, lat: 21.5033, lng: -104.8931,
+    desc: 'Departamento luminoso con balcón a la calle. Edificio de cuatro unidades con portón eléctrico.', caract: ['Balcón', 'Portón eléctrico', 'Closets', 'Tinaco nuevo'] },
+  { id: 3, interesados: 5, etiquetas: ['Apta crédito bancario', 'Privada con vigilancia'], alerta: { tipo: 'Alta Demanda', visitas: 4 }, tipo: 'Casa', colonia: 'Ciudad del Valle', titulo: 'Casa en privada con casa club', calle: 'Av. del Valle 1020', precio: 3890000, rec: 4, ban: 3, terreno: 200, constr: 240, est: 2, antig: 5, lat: 21.4879, lng: -104.8738,
+    desc: 'Casa de dos niveles en privada con vigilancia. Sala y comedor amplios, cuarto de servicio y jardín trasero.', caract: ['Privada con vigilancia', 'Cuarto de servicio', 'Jardín', 'Aire acondicionado'] },
+  { id: 4, interesados: 2, tipo: 'Casa', colonia: 'Ciudad del Valle', titulo: 'Casa nueva de dos niveles', calle: 'Calle Los Pinos 56', precio: 3150000, rec: 3, ban: 2, terreno: 140, constr: 175, est: 2, antig: 0, lat: 21.4851, lng: -104.8778,
+    desc: 'Construcción nueva con acabados modernos y cocina abierta. Lista para escriturar.', caract: ['Estrena', 'Cocina abierta', 'Medio baño en planta baja', 'Terraza'] },
+  { id: 5, interesados: 0, potencial: 'Lote plano en esquina: sirve para vivienda unifamiliar o para dos locales con vivienda arriba.', etiquetas: ['Uso de suelo habitacional'], tipo: 'Terreno', colonia: 'Ciudad del Valle', titulo: 'Terreno plano de 300 m²', calle: 'Calle Las Palmas s/n', precio: 1200000, rec: null, ban: null, terreno: 300, constr: null, est: null, antig: null, lat: 21.4888, lng: -104.8790,
+    desc: 'Terreno plano en esquina, con servicios a pie de lote y escrituras en regla.', caract: ['Esquina', 'Agua y luz en el lote', 'Escrituras'] },
+  { id: 6, interesados: 1, tipo: 'Casa', colonia: 'Lindavista', titulo: 'Casa de una planta', calle: 'Calle Jacarandas 33', precio: 1780000, rec: 3, ban: 2, terreno: 160, constr: 120, est: 1, antig: 12, lat: 21.5155, lng: -104.9050,
+    desc: 'Casa de una sola planta con patio para ampliar. Zona tranquila y cerca de escuelas.', caract: ['Una planta', 'Patio de servicio', 'Cochera techada'] },
+  { id: 7, interesados: 4, estatus: 'En Trámite', tipo: 'Casa', colonia: 'Lindavista', titulo: 'Casa con alberca', calle: 'Calle Bugambilias 8', precio: 4600000, rec: 4, ban: 4, terreno: 320, constr: 280, est: 3, antig: 10, lat: 21.5132, lng: -104.9082,
+    desc: 'Casa amplia con alberca, palapa y área de asador. Cuatro recámaras con baño propio.', caract: ['Alberca', 'Palapa', 'Asador', 'Cuatro baños'] },
+  { id: 8, interesados: 2, tipo: 'Departamento', colonia: 'Mololoa', titulo: 'Departamento cerca del parque', calle: 'Calle Río Mololoa 410, int. 2', precio: 1520000, rec: 2, ban: 2, terreno: null, constr: 92, est: 1, antig: 3, lat: 21.4968, lng: -104.8818,
+    desc: 'Departamento casi nuevo en planta baja, con patio privado. A unos pasos de áreas verdes.', caract: ['Patio privado', 'Casi nuevo', 'Bodega'] },
+  { id: 9, interesados: 0, tipo: 'Casa', colonia: 'Mololoa', titulo: 'Casa en esquina', calle: 'Calle Sauces 71', precio: 2380000, rec: 3, ban: 2, terreno: 150, constr: 160, est: 2, antig: 15, lat: 21.4942, lng: -104.8845,
+    desc: 'Casa en esquina con ventanas a dos calles, mucha luz natural y local comercial en la entrada.', caract: ['Esquina', 'Local en entrada', 'Dos cocheras'] },
+  { id: 10, interesados: 0, potencial: 'Buena estructura: se puede remodelar o dividir en dos viviendas para renta.', etiquetas: ['Oportunidad de inversión'], tipo: 'Casa', colonia: 'Cuauhtémoc', titulo: 'Casa para remodelar', calle: 'Calle Hidalgo 502', precio: 1150000, rec: 3, ban: 1, terreno: 170, constr: 130, est: 1, antig: 40, lat: 21.5001, lng: -104.9138,
+    desc: 'Casa con buena estructura que necesita remodelación. Precio de oportunidad en zona consolidada.', caract: ['Buena estructura', 'Terreno amplio', 'Para remodelar'] },
+  { id: 11, interesados: 1, tipo: 'Local', colonia: 'Cuauhtémoc', titulo: 'Local comercial sobre avenida', calle: 'Av. Insurgentes 1290', precio: 2900000, rec: null, ban: 1, terreno: 120, constr: 110, est: 3, antig: 7, lat: 21.4979, lng: -104.9110,
+    desc: 'Local de 110 m² con frente a avenida de mucho tráfico. Estacionamiento propio para tres autos.', caract: ['Frente a avenida', 'Estacionamiento', 'Baño', 'Cortina metálica'] }
+];
+
+var COLONIAS = {}, PROPS = [], BYID = {};
+function normProp(p) {
+  p.estatus = /tr[aá]mite|apartad/i.test(p.estatus || '') ? 'tramite' : 'disponible';
+  p.caract = p.caract || []; p.etiquetas = p.etiquetas || []; p.categoria = p.categoria || [];
+  p.potencial = p.potencial || ''; p.alerta = p.alerta || null;
+  return p;
+}
+function setData(cols, props) { COLONIAS = cols; PROPS = props; BYID = {}; props.forEach(function (p) { BYID[p.id] = p; }); }
+
+var CATS = {
+  educacion:  { n: 'Escuelas', c: '#3b6fd1' },
+  salud:      { n: 'Salud', c: '#d1475a' },
+  compras:    { n: 'Compras', c: '#c98a10' },
+  parques:    { n: 'Parques', c: '#2f9a5a' },
+  banco:      { n: 'Bancos', c: '#7a55c7' },
+  transporte: { n: 'Transporte', c: '#5a6b73' }
+};
+
+/* ============ UTILIDADES ============ */
+function $(s, r) { return (r || document).querySelector(s); }
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function mxn(n) { return '$' + n.toLocaleString('es-MX'); }
+function short(n) { return n >= 1e6 ? '$' + (Math.round(n / 1e4) / 100) + ' M' : '$' + Math.round(n / 1000) + ' mil'; }
+function hav(a, b) {
+  var R = 6371000, t = Math.PI / 180, dLa = (b[0] - a[0]) * t, dLo = (b[1] - a[1]) * t;
+  var x = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a[0] * t) * Math.cos(b[0] * t) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+function fmtDist(m) { return m < 1000 ? (Math.round(m / 10) * 10) + ' m' : (m / 1000).toFixed(1) + ' km'; }
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function countCol(k) { return PROPS.filter(function (p) { return p.colonia === k; }).length; }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function isoDate(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+function fromIso(s) { var a = s.split('-'); return new Date(+a[0], +a[1] - 1, +a[2]); }
+function copyText(text, el) {
+  function fallback() { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+  try { navigator.clipboard.writeText(text).catch(fallback); } catch (e) { fallback(); }
+}
+
+/* ============ MAPA ============ */
+var pillBase = '';
+var state = { sel: null, radar: 'todo', feat: null, poiSel: null, interested: {}, pois: null, poiToken: 0, form: null };
+var hlLine = null;
+var markers = {}, colCircles = {}, colLabels = {}, poiMarkers = [], poiLayer, ringLayer, searchMarker;
+
+var map = L.map('map', { zoomControl: false, minZoom: 11, maxZoom: 18, zoomSnap: 0.5 }).setView(CFG.centro, CFG.zoom);
+map.attributionControl.setPrefix(false);
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+if (DEMO) {
+  $('#map').parentNode.classList.add('demo-grid');
+  map.attributionControl.addAttribution('Vista esquemática de demostración');
+  $('#demo-pill').hidden = false;
+} else {
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }).addTo(map);
+}
+poiLayer = L.layerGroup().addTo(map);
+ringLayer = L.layerGroup().addTo(map);
+
+function build() {
+Object.keys(COLONIAS).forEach(function (k) {
+  var d = COLONIAS[k];
+  colCircles[k] = L.circle(d.c, { radius: d.r, className: 'col-area', interactive: false }).addTo(map);
+  var lat = d.c[0] + (d.r * 0.8) / 111320;
+  var icon = L.divIcon({ className: 'col-label', html: '<button type="button" class="col-btn" tabindex="-1">' + esc(k) + '</button>', iconSize: [0, 0] });
+  colLabels[k] = L.marker([lat, d.c[1]], { icon: icon, keyboard: false, zIndexOffset: -500 }).addTo(map);
+  colLabels[k].on('click', function () { zoomColonia(k); });
+});
+
+PROPS.forEach(function (p) {
+  var tr = p.estatus === 'tramite';
+  var icon = L.divIcon({ className: 'pin-wrap', html: '<div class="pin' + (tr ? ' tramite' : '') + '" data-id="' + esc(p.id) + '">' + (tr ? '⏳ APARTADA (' + short(p.precio) + ')' : short(p.precio)) + '</div>', iconSize: [0, 0] });
+  var m = L.marker([p.lat, p.lng], { icon: icon, title: p.titulo + ', ' + mxn(p.precio) + (tr ? ' (apartada)' : ''), alt: p.titulo, keyboard: true, riseOnHover: true });
+  m.on('click', function () { selectProp(p.id); });
+  m.addTo(map);
+  markers[p.id] = m;
+});
+}
+
+/* ============ FILTRO POR COLONIA Y CHIPS ============ */
+function renderChips() {
+  var h = RADAR.map(function (r) {
+    return '<button type="button" class="chip' + (r.k === 'tramite' ? ' chip-tramite' : '') + '" data-k="' + r.k + '" aria-pressed="' + (state.radar === r.k) + '">' + r.label + '<b>' + PROPS.filter(r.test).length + '</b></button>';
+  }).join('');
+  var el = $('#chips'), sl = el.scrollLeft;
+  el.innerHTML = h;
+  el.scrollLeft = sl;
+  chipsUpdate();
+}
+function chipsUpdate() {
+  var el = $('#chips'), prev = $('.chips-nav.prev'), next = $('.chips-nav.next'); if (!el || !prev) return;
+  var max = el.scrollWidth - el.clientWidth;
+  prev.hidden = el.scrollLeft < 8; next.hidden = el.scrollLeft > max - 8;
+}
+function centerChip() {
+  var el = $('#chips'), a = el.querySelector('.chip[aria-pressed="true"]'); if (!a || state.radar === 'todo') return;
+  el.scrollTo({ left: Math.max(0, a.offsetLeft - (el.clientWidth - a.offsetWidth) / 2), behavior: 'smooth' });
+}
+(function chipsScroll() {
+  var el = $('#chips'), wrap = el.parentNode, startX = 0, startL = 0, down = false, moved = false;
+  el.addEventListener('scroll', chipsUpdate, { passive: true });
+  window.addEventListener('resize', chipsUpdate);
+  if (window.ResizeObserver) { new ResizeObserver(chipsUpdate).observe(el); }
+  el.addEventListener('wheel', function (e) {
+    if (el.scrollWidth <= el.clientWidth || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    el.scrollLeft += e.deltaY; e.preventDefault();
+  }, { passive: false });
+  el.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = true; moved = false; startX = e.clientX; startL = el.scrollLeft;
+  });
+  el.addEventListener('pointermove', function (e) {
+    if (!down) return;
+    var dx = e.clientX - startX;
+    if (!moved && Math.abs(dx) > 5) { moved = true; el.classList.add('drag'); try { el.setPointerCapture(e.pointerId); } catch (x) {} }
+    if (moved) { el.scrollLeft = startL - dx; }
+  });
+  function end() { if (!down) return; down = false; el.classList.remove('drag'); }
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end); el.addEventListener('lostpointercapture', end);
+  el.addEventListener('click', function (e) { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+  $('.chips-nav.prev', wrap).addEventListener('click', function () { el.scrollBy({ left: -el.clientWidth * 0.7, behavior: 'smooth' }); });
+  $('.chips-nav.next', wrap).addEventListener('click', function () { el.scrollBy({ left: el.clientWidth * 0.7, behavior: 'smooth' }); });
+}());
+var RADAR = [
+  { k: 'todo', label: '💎 Todo el Radar', test: function () { return true; } },
+  { k: 'oport', label: '📉 Oportunidades', test: function (p) { return !!(p.radar && p.radar.oport); } },
+  { k: 'remod', label: '🛠️ Remodelación / Lotes', test: function (p) { return !!(p.radar && p.radar.remod); } },
+  { k: 'tramite', label: '🔥 En Trámite / Apartadas', test: function (p) { return p.estatus === 'tramite'; } }
+];
+function radarDef(k) { return RADAR.filter(function (r) { return r.k === k; })[0]; }
+function hasFeat(p) {
+  if (!state.feat) return true;
+  return (p.caract || []).concat(p.etiquetas || []).some(function (c) { return norm(c) === state.feat.key; });
+}
+function visible(p) { return radarDef(state.radar).test(p) && hasFeat(p); }
+function sheetPad() {
+  if (!state.sel) return [0, 0];
+  var r = sheet.getBoundingClientRect();
+  return window.innerWidth >= 900 ? [r.width + 32, 0] : [0, r.height];
+}
+function renderFeatBar(n) {
+  var el = $('#feat-bar'); if (!el) return;
+  if (!state.feat) { el.hidden = true; return; }
+  $('#feat-txt').textContent = state.feat.label + ' · ' + n + (n === 1 ? ' propiedad' : ' propiedades');
+  el.hidden = false;
+}
+function setFeat(label) {
+  var key = norm(label);
+  state.feat = (state.feat && state.feat.key === key) ? null : { label: label, key: key };
+  var tags = sheet.querySelectorAll('.tag');
+  for (var i = 0; i < tags.length; i++) { tags[i].setAttribute('aria-pressed', String(!!state.feat && norm(tags[i].getAttribute('data-v')) === state.feat.key)); }
+  applyFilter(true);
+}
+function m2(p) { var b = p.constr || p.terreno; return b ? p.precio / b : null; }
+function median(a) { if (!a.length) return null; a = a.slice().sort(function (x, y) { return x - y; }); var m = a.length >> 1; return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; }
+/* Oportunidad: precio por m² al menos 15% abajo de la mediana de su mismo tipo, o marcada en la columna categoria_radar.
+   Remodelación / Lotes: terrenos, textos que hablan de remodelar, o marcada en categoria_radar. */
+function computeRadar() {
+  var byTipo = {}, all = [];
+  PROPS.forEach(function (p) { var v = m2(p); if (v) { (byTipo[p.tipo] = byTipo[p.tipo] || []).push(v); all.push(v); } });
+  var medAll = median(all);
+  PROPS.forEach(function (p) {
+    var tags = norm((p.categoria || []).join(' '));
+    var arr = byTipo[p.tipo] || [], med = arr.length >= 3 ? median(arr) : medAll, v = m2(p);
+    var text = norm([p.titulo, p.desc, (p.caract || []).join(' '), p.potencial].join(' '));
+    var libre = p.estatus !== 'tramite';
+    p.radar = {
+      oport: libre && (/oportunidad/.test(tags) || !!(v && med && v <= med * 0.85)),
+      remod: libre && (/remodel|lote/.test(tags) || p.tipo === 'Terreno' || /remodel|reconstru/.test(text))
+    };
+  });
+}
+function refreshPill(n) { setPill(n === 0 ? 'No hay propiedades con este filtro. Quita el filtro o toca otro.' : pillBase); }
+function applyFilter(fit) {
+  var pts = [];
+  PROPS.forEach(function (p) {
+    if (visible(p)) { markers[p.id].addTo(map); pts.push([p.lat, p.lng]); } else { map.removeLayer(markers[p.id]); }
+  });
+  if (state.sel && !visible(state.sel)) { closeSheet(); }
+  if (fit && pts.length) { map.fitBounds(L.latLngBounds(pts).pad(0.3), { maxZoom: 16, paddingTopLeft: [0, 130], paddingBottomRight: sheetPad() }); }
+  refreshPill(pts.length); renderFeatBar(pts.length);
+}
+function setRadar(k) {
+  state.radar = (!k || k === state.radar) ? 'todo' : k;
+  renderChips(); centerChip(); applyFilter(true);
+}
+function ensureVisible(p) { if (!visible(p)) { state.radar = 'todo'; state.feat = null; renderChips(); applyFilter(false); } }
+function zoomColonia(k) {
+  var c = colCircles[k]; if (!c) return;
+  map.fitBounds(c.getBounds(), { maxZoom: 16, paddingTopLeft: [0, 110] });
+}
+$('#feat-x').addEventListener('click', function () { if (state.feat) { state.feat = null; var tg = sheet.querySelectorAll('.tag'); for (var i = 0; i < tg.length; i++) { tg[i].setAttribute('aria-pressed', 'false'); } applyFilter(true); } });
+$('#chips').addEventListener('click', function (e) {
+  var b = e.target.closest('.chip'); if (!b) return;
+  setRadar(b.getAttribute('data-k'));
+});
+
+/* ============ BUSCADOR ============ */
+var qEl = $('#q'), sugEl = $('#sug');
+function matches(t) {
+  var n = norm(t).trim(); if (n.length < 2) return [];
+  var out = [];
+  Object.keys(COLONIAS).forEach(function (k) { if (norm(k).indexOf(n) > -1) out.push({ t: 'col', k: k, label: k, sub: 'Colonia · ' + countCol(k) + ' propiedades' }); });
+  PROPS.forEach(function (p) { if (norm(p.titulo + ' ' + p.calle + ' ' + p.colonia + ' ' + p.tipo).indexOf(n) > -1) out.push({ t: 'prop', id: p.id, label: p.titulo, sub: p.colonia + ' · ' + short(p.precio) }); });
+  return out.slice(0, 6);
+}
+function showSug(list, emptyMsg) {
+  if (!list.length && !emptyMsg) { sugEl.hidden = true; sugEl.innerHTML = ''; return; }
+  var h = list.map(function (m, i) { return '<button type="button" data-i="' + i + '"><span>' + esc(m.label) + '</span><span class="s-sub">' + esc(m.sub) + '</span></button>'; }).join('');
+  if (!list.length) { h = '<div class="s-none">' + esc(emptyMsg) + '</div>'; }
+  sugEl.innerHTML = h; sugEl.hidden = false; sugEl._list = list;
+}
+function pickSug(m) {
+  sugEl.hidden = true; qEl.value = m.label; qEl.blur();
+  if (m.t === 'col') { closeSheet(); zoomColonia(m.k); }
+  else { ensureVisible(BYID[m.id]); selectProp(m.id); }
+}
+qEl.addEventListener('input', function () { showSug(matches(qEl.value)); });
+qEl.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { sugEl.hidden = true; return; }
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  var list = matches(qEl.value);
+  if (list.length) { pickSug(list[0]); return; }
+  var t = qEl.value.trim(); if (t.length < 3) return;
+  if (DEMO) { showSug([], 'No encontré esa colonia o propiedad. Prueba con Centro, Ciudad del Valle o Lindavista.'); return; }
+  showSug([], 'Buscando dirección…');
+  fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=mx&bounded=1&viewbox=-105.05,21.60,-104.75,21.40&q=' + encodeURIComponent(t + ', Tepic'))
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j.length) { showSug([], 'No encontré esa dirección en Tepic.'); return; }
+      sugEl.hidden = true;
+      var ll = [parseFloat(j[0].lat), parseFloat(j[0].lon)];
+      if (searchMarker) { map.removeLayer(searchMarker); }
+      searchMarker = L.marker(ll, { icon: L.divIcon({ className: 'search-dot', html: '<span></span>', iconSize: [0, 0] }), title: 'Resultado de la búsqueda' }).addTo(map);
+      map.setView(ll, 16);
+    }).catch(function () { showSug([], 'No se pudo buscar la dirección. Revisa tu conexión.'); });
+});
+sugEl.addEventListener('pointerdown', function (e) { e.preventDefault(); });
+sugEl.addEventListener('click', function (e) {
+  var b = e.target.closest('button[data-i]'); if (!b) return;
+  pickSug(sugEl._list[+b.getAttribute('data-i')]);
+});
+document.addEventListener('click', function (e) { if (!e.target.closest('.search')) { sugEl.hidden = true; } });
+
+/* ============ FICHA ============ */
+var sheet = $('#sheet'), body = $('#sheet-body');
+var ICONS = {
+  Casa: '<path d="M12 42 60 10l48 32v30H12z"/><path d="M48 72V50h24v22"/>',
+  Departamento: '<path d="M34 72V12h52v60zM34 72h52M46 24h10M64 24h10M46 38h10M64 38h10M46 52h10M64 52h10"/>',
+  Terreno: '<path d="M10 64 40 30h70l-20 34zM40 30l-8 34M75 30l-10 34"/>',
+  Local: '<path d="M14 30h92l-6 14H20zM22 44v28h76V44M50 72V54h20v18"/>'
+};
+function focusOnMap(ll, zoom) {
+  var size = map.getSize(), wide = window.innerWidth >= 900, tx, ty;
+  if (wide) { tx = (size.x - 436) / 2; ty = size.y / 2 + 40; }
+  else { tx = size.x / 2; ty = (size.y * 0.34) / 2 + 52; }
+  var z = zoom || map.getZoom();
+  var pt = map.project(L.latLng(ll), z).add([size.x / 2 - tx, size.y / 2 - ty]);
+  map.setView(map.unproject(pt, z), z, { animate: true });
+}
+function selectProp(id) {
+  var p = BYID[id]; if (!p) return;
+  var prev = state.sel;
+  state.sel = p;
+  if (prev) { setPinSel(prev.id, false); }
+  setPinSel(p.id, true);
+  state.form = null;
+  renderSheet(p);
+  sheet.classList.add('open');
+  $('#app').classList.add('has-sheet');
+  body.scrollTop = 0;
+  focusOnMap([p.lat, p.lng], 15);
+  loadPois(p);
+  setTimeout(function () { var c = $('.close', sheet); if (c) c.focus({ preventScroll: true }); }, 50);
+}
+function setPinSel(id, on) {
+  var el = markers[id] && markers[id].getElement(); var pin = el && el.querySelector('.pin');
+  if (pin) { pin.classList.toggle('sel', on); }
+  if (markers[id]) { markers[id].setZIndexOffset(on ? 1000 : 0); }
+}
+function closeSheet() {
+  if (!state.sel) return;
+  setPinSel(state.sel.id, false);
+  var el = markers[state.sel.id] && markers[state.sel.id].getElement();
+  state.sel = null; state.poiToken++;
+  sheet.classList.remove('open');
+  $('#app').classList.remove('has-sheet');
+  poiLayer.clearLayers(); ringLayer.clearLayers(); poiMarkers = []; hlLine = null; state.poiSel = null; $('#map').classList.remove('poi-focus');
+  if (el) { var b = el; try { b.focus({ preventScroll: true }); } catch (e) {} }
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && state.sel) { closeSheet(); } });
+
+function specsHtml(p) {
+  var s = [];
+  if (p.rec != null) s.push(['Recámaras', p.rec]);
+  if (p.ban != null) s.push(['Baños', p.ban]);
+  if (p.terreno) s.push(['Terreno', p.terreno + ' m²']);
+  if (p.constr) s.push(['Construcción', p.constr + ' m²']);
+  if (p.est != null) s.push(['Estacionamiento', p.est]);
+  if (p.antig != null) s.push(['Antigüedad', p.antig === 0 ? 'Nueva' : p.antig + ' años']);
+  var base = p.constr || p.terreno; if (base) s.push(['Precio por m²', mxn(Math.round(p.precio / base))]);
+  return '<dl class="specs">' + s.map(function (x) { return '<div><dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>';
+}
+function interesHtml(p) {
+  var n = p.interesados || 0;
+  return n > 0 ? '<b>' + n + '</b> ' + (n === 1 ? 'persona interesada' : 'personas interesadas') + ' en esta propiedad' : '';
+}
+function bumpInteres(p, n) {
+  p.interesados = (typeof n === 'number') ? n : (p.interesados || 0) + 1;
+  var el = $('#interes'); if (el && state.sel === p) { el.innerHTML = interesHtml(p); }
+}
+function tagHtml(c) {
+  var on = !!state.feat && norm(c) === state.feat.key;
+  return '<li><button type="button" class="tag" data-action="feat" data-v="' + esc(c) + '" aria-pressed="' + on + '" title="Ver en el mapa las propiedades con esto">' + esc(c) + '</button></li>';
+}
+function hasFoto(p) { return /^https:\/\//.test(p.foto || ''); }
+function renderSheet(p) {
+  var h = '';
+  h += '<div class="photo" role="img" aria-label="Ilustración de ' + esc(p.tipo.toLowerCase()) + '"><svg viewBox="0 0 120 80" aria-hidden="true">' + (ICONS[p.tipo] || ICONS.Casa) + '</svg>' + (hasFoto(p) ? '<img class="photo-img" alt="Foto de la propiedad" src="' + esc(p.foto) + '">' : '<span class="photo-note">Foto de la propiedad (ejemplo)</span>') + '</div>';
+  h += '<div class="s-head"><span class="kicker">' + esc(p.tipo) + ' en venta · ' + esc(p.colonia) + '</span><h2>' + esc(p.titulo) + '</h2><div class="price">' + mxn(p.precio) + ' <span class="addr" style="font:500 13px var(--f-body)">MXN</span></div><div class="addr">' + esc(p.calle) + ', Tepic, Nayarit</div><div class="interes" id="interes">' + interesHtml(p) + '</div></div>';
+  if (p.estatus === 'tramite') { h += '<div class="aviso-tramite" role="status"><b>⏳ APARTADA</b> Esta propiedad está en trámite. Pregunta si se libera o pide opciones parecidas.</div>'; }
+  h += specsHtml(p);
+  h += '<section class="sec"><h3>Descripción</h3><p>' + esc(p.desc) + '</p>' +
+    (p.etiquetas.length ? '<ul class="tags value" aria-label="Etiquetas de valor. Toca una para filtrar el mapa">' + p.etiquetas.map(tagHtml).join('') + '</ul>' : '') +
+    (p.caract.length ? '<ul class="tags" aria-label="Características. Toca una para filtrar el mapa">' + p.caract.map(tagHtml).join('') + '</ul>' : '') + '</section>';
+  if (p.potencial) { h += '<section class="dictamen"><h3>📐 Potencial Arquitectónico / Inversión</h3><p>' + esc(p.potencial) + '</p></section>'; }
+  h += '<section class="sec"><h3>Cerca de esta propiedad</h3><p class="note" id="poi-note">Dentro de 1 km a la redonda.</p><div class="cat-chips" id="poi-cats"></div><ul class="poi-list" id="poi-list"></ul></section>';
+  h += '<section class="cta" id="cta"></section>';
+  body.innerHTML = h;
+  var im = $('.photo-img', body); if (im) { im.addEventListener('error', function () { im.remove(); }); }
+  renderCta();
+}
+
+/* ============ PUNTOS DE INTERÉS ============ */
+function samplePois(p) {
+  var SAMPLE = [['educacion', 'Escuela primaria'], ['educacion', 'Jardín de niños'], ['salud', 'Centro de salud'], ['salud', 'Farmacia'], ['compras', 'Supermercado'], ['compras', 'Tienda de conveniencia'], ['parques', 'Parque'], ['banco', 'Sucursal bancaria'], ['transporte', 'Parada de transporte']];
+  var r = rng(hash(String(p.id))), out = [];
+  SAMPLE.forEach(function (s) {
+    var ang = r() * 6.283, d = 120 + r() * 820;
+    out.push({ cat: s[0], name: s[1], lat: p.lat + d * Math.cos(ang) / 111320, lng: p.lng + d * Math.sin(ang) / (111320 * Math.cos(p.lat * Math.PI / 180)) });
+  });
+  return out;
+}
+function catOf(t) {
+  var a = t.amenity, s = t.shop, l = t.leisure;
+  if (/^(school|kindergarten|college|university)$/.test(a)) return 'educacion';
+  if (/^(hospital|clinic|doctors|pharmacy)$/.test(a)) return 'salud';
+  if (a === 'bank') return 'banco';
+  if (a === 'bus_station') return 'transporte';
+  if (a === 'marketplace' || s) return 'compras';
+  if (l) return 'parques';
+  return null;
+}
+var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
+function overpassPois(p) {
+  var around = '(around:1000,' + p.lat + ',' + p.lng + ')';
+  var q = '[out:json][timeout:15];(' +
+    'nwr' + around + '["amenity"~"^(school|kindergarten|college|university|hospital|clinic|doctors|pharmacy|bank|marketplace|bus_station)$"];' +
+    'nwr' + around + '["shop"~"^(supermarket|convenience|mall)$"];' +
+    'nwr' + around + '["leisure"~"^(park|playground|sports_centre)$"];);out center 100;';
+  var i = 0;
+  function go() {
+    var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
+    return fetch(OVERPASS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal: ctl.signal })
+      .then(function (r) { clearTimeout(to); if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .catch(function (err) { clearTimeout(to); i++; if (i < OVERPASS.length) { return go(); } throw err; });
+  }
+  return go().then(function (j) {
+    var out = [];
+    j.elements.forEach(function (e) {
+      var t = e.tags || {}, cat = catOf(t); if (!cat) return;
+      var lat = e.lat != null ? e.lat : (e.center && e.center.lat), lng = e.lon != null ? e.lon : (e.center && e.center.lon);
+      if (lat == null || !t.name && cat !== 'parques') return;
+      out.push({ cat: cat, name: t.name || 'Parque o área verde', lat: lat, lng: lng });
+    });
+    return out;
+  });
+}
+function loadPois(p) {
+  var token = ++state.poiToken;
+  state.pois = { status: 'loading', items: [] };
+  poiLayer.clearLayers(); ringLayer.clearLayers(); poiMarkers = [];
+  L.circle([p.lat, p.lng], { radius: 1000, className: 'radius-ring', interactive: false }).addTo(ringLayer);
+  renderPoiUi();
+  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : overpassPois(p));
+  src.then(function (items) {
+    if (token !== state.poiToken) return;
+    items = items.filter(function (i) { return CATS[i.cat] && isFinite(i.lat) && isFinite(i.lng); });
+    items.forEach(function (i) { i.dist = hav([p.lat, p.lng], [i.lat, i.lng]); });
+    items = items.filter(function (i) { return i.dist <= 1050; }).sort(function (a, b) { return a.dist - b.dist; });
+    var per = {}; items = items.filter(function (i) { per[i.cat] = (per[i.cat] || 0) + 1; return per[i.cat] <= 6; });
+    state.pois = { status: 'ok', items: items };
+    renderPoiUi();
+  }).catch(function () {
+    if (token !== state.poiToken) return;
+    state.pois = { status: 'error', items: [] };
+    renderPoiUi();
+  });
+}
+function poiTip(i) { return esc(i.name) + ' · ' + fmtDist(i.dist); }
+function hlPoi(idx) {
+  var P = state.pois, p = state.sel; if (!P || !p) return;
+  var prev = state.poiSel;
+  if (prev !== null && poiMarkers[prev]) {
+    var pm = poiMarkers[prev], pe = pm.getElement(), ps = pe && pe.querySelector('.poi');
+    if (ps) ps.classList.remove('on');
+    pm.setZIndexOffset(-200); pm.unbindTooltip(); pm.bindTooltip(poiTip(P.items[prev]), { direction: 'top', offset: [0, -8] });
+    pm.closeTooltip();
+  }
+  if (hlLine) { poiLayer.removeLayer(hlLine); hlLine = null; }
+  if (idx === prev) { idx = null; }
+  state.poiSel = idx;
+  var rows = document.querySelectorAll('#poi-list [data-action="poi"]');
+  for (var r = 0; r < rows.length; r++) { rows[r].setAttribute('aria-pressed', String(idx !== null && +rows[r].getAttribute('data-i') === idx)); }
+  $('#map').classList.toggle('poi-focus', idx !== null);
+  if (idx === null) return;
+  var it = P.items[idx], m = poiMarkers[idx]; if (!it || !m) return;
+  var el = m.getElement(), sp = el && el.querySelector('.poi');
+  if (sp) sp.classList.add('on');
+  m.setZIndexOffset(1000); m.unbindTooltip();
+  m.bindTooltip(poiTip(it), { direction: 'top', offset: [0, -14], permanent: true, className: 'poi-tip' });
+  m.openTooltip();
+  hlLine = L.polyline([[p.lat, p.lng], [it.lat, it.lng]], { color: CATS[it.cat].c, weight: 3, opacity: 0.9, dashArray: '2 8', lineCap: 'round', interactive: false });
+  hlLine.addTo(poiLayer);
+  var pad = sheetPad();
+  map.fitBounds(L.latLngBounds([[p.lat, p.lng], [it.lat, it.lng]]), { paddingTopLeft: [50, 130], paddingBottomRight: [pad[0] + 50, pad[1] + 50], maxZoom: 17 });
+}
+function renderPoiUi() {
+  var list = $('#poi-list'), cats = $('#poi-cats'), note = $('#poi-note'); if (!list) return;
+  var P = state.pois;
+  poiLayer.clearLayers(); poiMarkers = []; hlLine = null; state.poiSel = null; $('#map').classList.remove('poi-focus');
+  if (P.status === 'loading') { note.textContent = 'Buscando escuelas, tiendas, parques y servicios cercanos…'; cats.innerHTML = ''; list.innerHTML = ''; return; }
+  if (P.status === 'error') { note.textContent = 'No se pudieron cargar los puntos de interés.'; cats.innerHTML = ''; list.innerHTML = '<li><button type="button" class="link-btn retry" data-action="retry-poi">Volver a intentar</button></li>'; return; }
+  note.textContent = DEMO ? 'Dentro de 1 km a la redonda. Lugares de ejemplo; en la versión en línea salen de OpenStreetMap.' : 'Dentro de 1 km a la redonda, según OpenStreetMap.';
+  var present = {}; P.items.forEach(function (i) { present[i.cat] = (present[i.cat] || 0) + 1; });
+  cats.innerHTML = Object.keys(CATS).filter(function (k) { return present[k]; }).map(function (k) {
+    return '<span class="cat" style="--c:' + CATS[k].c + '"><i></i>' + CATS[k].n + ' ' + present[k] + '</span>';
+  }).join('');
+  var vis = P.items;
+  list.innerHTML = vis.length ? vis.map(function (i, n) {
+    return '<li><button type="button" data-action="poi" aria-pressed="false" title="Ver dónde está en el mapa" data-i="' + P.items.indexOf(i) + '" style="--c:' + CATS[i.cat].c + '"><span class="dot"></span><span class="nm">' + esc(i.name) + '<br><small class="addr">' + CATS[i.cat].n + '</small></span><span class="ds">' + fmtDist(i.dist) + '</span></button></li>';
+  }).join('') : '<li class="note" style="padding:10px 0">No hay lugares registrados a 1 km de esta propiedad.</li>';
+  vis.forEach(function (i) {
+    var m = L.marker([i.lat, i.lng], { icon: L.divIcon({ className: 'poi-wrap', html: '<span class="poi" style="--c:' + CATS[i.cat].c + '"></span>', iconSize: [0, 0] }), title: i.name, keyboard: false, zIndexOffset: -200 });
+    m.bindTooltip(poiTip(i), { direction: 'top', offset: [0, -8] });
+    m.addTo(poiLayer); poiMarkers[P.items.indexOf(i)] = m;
+  });
+}
+
+/* ============ ME INTERESA, LLAMAR, AGENDAR POR WHATSAPP ============ */
+function waLink(text, num) { return 'https://wa.me/' + (num || '') + '?text=' + encodeURIComponent(text); }
+function shareLink(p) { return location.href.split('#')[0] + '#' + encodeURIComponent(p.id); }
+function shareText(p) { return 'Mira esta propiedad en ' + p.colonia + ', Tepic: ' + p.titulo + ' (' + p.calle + '), ' + mxn(p.precio) + '. ' + shareLink(p); }
+function citaText(p, f) {
+  var d = fromIso(f.fecha).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+  var h = f.hora.replace(/^0/, '');
+  if (p.estatus === 'tramite') {
+    return 'Hola, vi que "' + p.titulo + '" (' + p.calle + ', ' + p.colonia + ') está apartada. Quiero saber si se libera o ver opciones parecidas. Me gustaría agendar visita el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
+  }
+  return 'Hola, quiero confirmar cita para ver la propiedad "' + p.titulo + '" (' + p.calle + ', ' + p.colonia + ') el ' + d + ' a las ' + h + ' h. Clave ' + p.id + '.';
+}
+function renderCta() {
+  var p = state.sel, el = $('#cta'); if (!el || !p) return;
+  var tr = p.estatus === 'tramite';
+  var share = '<a class="btn alt" href="' + esc(waLink(shareText(p))) + '" target="_blank" rel="noopener" data-action="share">📲 Compartir ficha por WhatsApp</a>';
+  if (!state.interested[p.id]) {
+    el.innerHTML = '<h3>' + (tr ? 'Esta propiedad está en trámite' : '¿Te interesa esta propiedad?') + '</h3><p class="note" style="margin:0">' +
+      (tr ? 'Pregunta si se libera o pide opciones parecidas.' : 'Pide más información por teléfono o agenda una visita para conocerla.') +
+      '</p><button type="button" class="btn" data-action="interesa">Me interesa</button>' + share;
+    return;
+  }
+  el.innerHTML = '<h3>Gracias por tu interés</h3>' +
+    '<div class="btn-row"><a class="btn alt" href="tel:' + CFG.telefonoTel + '" data-action="llamar">Llamar</a><button type="button" class="btn" data-action="agendar">Agendar cita</button></div>' +
+    '<div class="phone-line"><span id="tel-num">' + esc(CFG.telefono) + '</span><button type="button" class="link-btn" data-action="copiar">Copiar número</button></div>' +
+    '<div id="cita-box"></div>' + share;
+  if (state.form) { renderForm(); }
+}
+function openDays() {
+  var out = [], d = new Date(); d.setHours(0, 0, 0, 0);
+  while (out.length < 6) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0) out.push(new Date(d)); }
+  return out;
+}
+function slotsFor(d) { return d.getDay() === 6 ? ['09:00', '10:00', '11:00', '12:00'] : ['09:00', '10:00', '11:00', '12:00', '13:00', '15:00', '16:00', '17:00']; }
+var useServer = !DEMO && !!CFG.appsScriptUrl;
+function fetchBusy(iso) {
+  if (useServer) {
+    return fetch(CFG.appsScriptUrl + '?fecha=' + encodeURIComponent(iso)).then(function (r) { return r.json(); }).then(function (j) { return j.ocupadas || []; });
+  }
+  var d = fromIso(iso), r = rng(d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate()), sl = slotsFor(d), busy = [];
+  for (var i = 0; i < 2; i++) { busy.push(sl[Math.floor(r() * sl.length)]); }
+  return Promise.resolve(busy);
+}
+function renderForm() {
+  var p = state.sel, box = $('#cita-box'); if (!box || !p) return;
+  var f = state.form, days = openDays();
+  box.innerHTML = '<div class="form"><h4>Elige día y hora</h4><p class="note" style="margin:0">' + esc(p.titulo) + ' · ' + esc(p.calle) + '</p>' +
+    '<fieldset><legend>Día</legend><div class="pick">' + days.map(function (d) {
+      var iso = isoDate(d);
+      return '<button type="button" class="opt" data-action="date" data-v="' + iso + '" aria-pressed="' + (f.fecha === iso) + '">' + esc(d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' })) + '</button>';
+    }).join('') + '</div></fieldset>' +
+    '<fieldset><legend>Hora</legend><div class="pick" id="f-horas">' + slotsHtml() + '</div></fieldset>' +
+    '<p class="err" id="f-err" role="alert"></p>' +
+    '<a class="btn wa" id="wa-send" href="#" target="_blank" rel="noopener" data-action="wa-send" aria-disabled="true">Confirmar cita por WhatsApp</a>' +
+    '<p class="note" style="margin:0">Se abre WhatsApp con el mensaje ya escrito. Envíalo para que te confirmen la cita.</p></div>';
+  updateWa();
+}
+function updateWa() {
+  var f = state.form, p = state.sel, a = $('#wa-send'); if (!a || !p) return;
+  var ok = !!(f && f.fecha && f.hora);
+  a.setAttribute('aria-disabled', ok ? 'false' : 'true');
+  a.href = ok ? waLink(citaText(p, f), CFG.whatsapp) : '#';
+}
+function slotsHtml() {
+  var f = state.form;
+  if (!f.fecha) return '<span class="note" style="margin:0">Elige primero un día.</span>';
+  if (f.loading) return '<span class="note" style="margin:0">Revisando horarios libres…</span>';
+  return slotsFor(fromIso(f.fecha)).map(function (s) {
+    var busy = (f.busy || []).indexOf(s) > -1;
+    return '<button type="button" class="opt" data-action="slot" data-v="' + s + '"' + (busy ? ' disabled' : '') + ' aria-pressed="' + (f.hora === s) + '">' + s + '</button>';
+  }).join('');
+}
+function pickDate(iso) {
+  var f = state.form; f.fecha = iso; f.hora = null; f.busy = []; f.loading = true; renderForm();
+  fetchBusy(iso).then(function (b) { if (state.form !== f || f.fecha !== iso) return; f.busy = b; f.loading = false; renderForm(); })
+    .catch(function () { if (state.form !== f) return; f.busy = []; f.loading = false; renderForm(); });
+}
+
+/* ============ EVENTOS DE LA FICHA ============ */
+sheet.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-action]'); if (!t) return;
+  var a = t.getAttribute('data-action'), p = state.sel;
+  if (a === 'close') { closeSheet(); }
+  else if (a === 'interesa') { state.interested[p.id] = true; renderCta(); var ag = $('[data-action="agendar"]'); if (ag) ag.focus({ preventScroll: true }); }
+  else if (a === 'agendar') {
+    if (!state.form) { state.form = {}; pickDate(isoDate(openDays()[0])); } else { renderForm(); }
+    var bx = $('#cita-box'); if (bx) { bx.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  }
+  else if (a === 'copiar') { copyText(CFG.telefono, $('#tel-num')); t.textContent = 'Número copiado'; setTimeout(function () { t.textContent = 'Copiar número'; }, 2000); }
+  else if (a === 'date') { pickDate(t.getAttribute('data-v')); }
+  else if (a === 'slot') { state.form.hora = t.getAttribute('data-v'); $('#f-horas').innerHTML = slotsHtml(); updateWa(); }
+  else if (a === 'wa-send') { if (t.getAttribute('aria-disabled') === 'true') { e.preventDefault(); var er = $('#f-err'); if (er) { er.textContent = 'Elige un día y una hora.'; } } }
+  else if (a === 'feat') { setFeat(t.getAttribute('data-v')); }
+  else if (a === 'poi') { hlPoi(+t.getAttribute('data-i')); }
+  else if (a === 'retry-poi') { loadPois(p); }
+});
+
+/* ============ AVISOS FLOTANTES (solo con datos reales de la hoja) ============ */
+var toastItems = [], toastTimers = [], toastHide = null, toastCur = null;
+function ago(iso) {
+  var t = Date.parse(iso || ''); if (!t) return null;
+  var m = Math.round((Date.now() - t) / 60000); if (m < 0) return null;
+  if (m < 1) return 'unos segundos';
+  if (m < 60) return m + ' min';
+  var h = Math.round(m / 60); if (h < 24) return h + ' h';
+  var d = Math.round(h / 24); return d + (d === 1 ? ' día' : ' días');
+}
+function alertText(p) {
+  var a = p.alerta, tipo = norm(a.tipo || ''), t = ago(a.fecha);
+  var lugar = '"' + p.titulo + ' - ' + p.colonia + '" (' + short(p.precio) + ')';
+  var dias = a.fecha ? (Date.now() - Date.parse(a.fecha)) / 86400000 : null;
+  if (/tramite|apart/.test(tipo)) { return '🔴 Actualización: ' + lugar + ' está EN TRÁMITE' + (t ? ' desde hace ' + t : '') + '.'; }
+  if (/demanda/.test(tipo)) { return a.visitas > 0 ? '🔥 Alta demanda: ' + lugar + ' tiene ' + a.visitas + (a.visitas === 1 ? ' visita agendada' : ' visitas agendadas') + ' esta semana.' : null; }
+  if (/cita|visita/.test(tipo)) { return (t && dias !== null && dias <= 14) ? '📡 Pulso del Radar: hace ' + t + ' se agendó visita para ' + lugar + '.' : null; }
+  return null;
+}
+function buildToasts() {
+  toastItems = PROPS.filter(function (p) { return p.alerta; }).map(function (p) { return { p: p, t: alertText(p), ts: Date.parse(p.alerta.fecha) || 0 }; })
+    .filter(function (x) { return x.t; }).sort(function (a, b) { return b.ts - a.ts; });
+}
+function showToast(i) {
+  var it = toastItems[i], el = $('#toast'); if (!it || !el || document.hidden) return;
+  toastCur = it.p.id;
+  $('#toast-txt').textContent = it.t;
+  el.hidden = false;
+  requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('in'); }); });
+  armToast(6000);
+}
+function armToast(ms) { clearTimeout(toastHide); toastHide = setTimeout(hideToast, ms); }
+function hideToast() {
+  var el = $('#toast'); if (!el) return;
+  clearTimeout(toastHide); el.classList.remove('in');
+  setTimeout(function () { if (!el.classList.contains('in')) { el.hidden = true; } }, 350);
+}
+function startToasts() {
+  toastTimers.forEach(clearTimeout); toastTimers = [];
+  buildToasts();
+  if (!toastItems.length) return;
+  toastTimers.push(setTimeout(function () { showToast(0); }, 20000));
+  if (toastItems.length > 1) { toastTimers.push(setTimeout(function () { showToast(1); }, 60000)); }
+}
+(function toastEvents() {
+  var el = $('#toast');
+  el.addEventListener('mouseenter', function () { clearTimeout(toastHide); });
+  el.addEventListener('mouseleave', function () { if (el.classList.contains('in')) { armToast(3000); } });
+  el.addEventListener('focusin', function () { clearTimeout(toastHide); });
+  el.addEventListener('focusout', function () { if (el.classList.contains('in')) { armToast(3000); } });
+  $('#toast-go').addEventListener('click', function () { var p = BYID[toastCur]; hideToast(); if (p) { ensureVisible(p); selectProp(p.id); } });
+  $('.toast-x', el).addEventListener('click', hideToast);
+}());
+
+/* ============ INICIO ============ */
+function setPill(t) { var el = $('#demo-pill'); el.textContent = t; el.hidden = !t; }
+function openFromHash() {
+  var h = ''; try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  if (h && BYID[h]) { ensureVisible(BYID[h]); selectProp(h); }
+}
+function start(cols, props) {
+  setData(cols, props.map(normProp)); computeRadar(); build(); renderChips(); applyFilter(false); openFromHash(); startToasts();
+}
+window.addEventListener('hashchange', openFromHash);
+function loadData() {
+  pillBase = ''; setPill('Cargando propiedades…');
+  fetch(CFG.appsScriptUrl + '?accion=datos').then(function (r) { return r.json(); }).then(function (j) {
+    if (!j || !j.colonias || !j.propiedades) { throw new Error('formato'); }
+    var cols = {}; j.colonias.forEach(function (c) { cols[c.nombre] = { c: [c.lat, c.lng], r: c.radio || 500 }; });
+    start(cols, j.propiedades);
+    if (j.avisos && j.avisos.length && window.console) { console.warn('Avisos de la hoja:', j.avisos); }
+    setPill(PROPS.length ? '' : 'Todavía no hay propiedades en venta.');
+  }).catch(function () { setPill('No se pudieron cargar las propiedades. Recarga la página.'); });
+}
+if (useServer) { loadData(); }
+else {
+  DEMO_PROPS.forEach(function (p) { if (p.alerta && p.alerta.min != null) { p.alerta.fecha = new Date(Date.now() - p.alerta.min * 60000).toISOString(); } });
+  pillBase = DEMO ? 'Demostración: propiedades, precios y avisos de ejemplo' : 'Datos de ejemplo. Falta conectar la hoja de Google.';
+  start(DEMO_COLONIAS, DEMO_PROPS);
+  setPill(pillBase);
+}
+if (window.claude && window.claude.hot && window.claude.hot.snapshot) { try { window.claude.hot.snapshot(function () { return {}; }); } catch (e) {} }
+}());
+
+</script>
+</body>
+</html>
