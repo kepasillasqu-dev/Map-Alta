@@ -726,6 +726,13 @@ function catOf(t) {
   if (l) return 'parques';
   return null;
 }
+function serverPois(p) {
+  if (!CFG.appsScriptUrl) return Promise.reject(new Error('sin servidor'));
+  return fetch(CFG.appsScriptUrl + '?accion=cercanos&id=' + encodeURIComponent(p.id)).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j || !Array.isArray(j.cercanos)) throw new Error((j && j.error) || 'sin datos');
+    return j.cercanos;
+  });
+}
 var OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
 function overpassPois(p) {
   var around = '(around:1000,' + p.lat + ',' + p.lng + ')';
@@ -757,7 +764,7 @@ function loadPois(p) {
   poiLayer.clearLayers(); ringLayer.clearLayers(); poiMarkers = [];
   L.circle([p.lat, p.lng], { radius: 1000, className: 'radius-ring', interactive: false }).addTo(ringLayer);
   renderPoiUi();
-  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : overpassPois(p));
+  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : serverPois(p).catch(function () { return overpassPois(p); }));
   src.then(function (items) {
     if (token !== state.poiToken) return;
     items = items.filter(function (i) { return CATS[i.cat] && isFinite(i.lat) && isFinite(i.lng); });
