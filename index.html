@@ -884,7 +884,7 @@ function loadPois(p) {
   L.circle([p.lat, p.lng], { radius: 500, className: 'radius-ring inner', interactive: false }).addTo(ringLayer);
   ringLabel(p, 1000, '🚗 A 1 km a la redonda'); ringLabel(p, 500, '🚶 A 5 min caminando (500 m)');
   renderPoiUi();
-  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : (DEMO ? Promise.resolve(samplePois(p)) : (useServer ? withTimeout(serverPois(p), 60000) : overpassPois(p)));
+  var src = Array.isArray(p.cercanos) ? Promise.resolve(p.cercanos.slice()) : ((DEMO || !useServer) ? Promise.resolve(samplePois(p)) : withTimeout(serverPois(p), 60000));
   src.then(function (items) {
     if (token !== state.poiToken) return;
     items = items.filter(function (i) { return CATS[i.cat] && isFinite(i.lat) && isFinite(i.lng); });
@@ -935,7 +935,7 @@ function renderPoiUi() {
   poiLayer.clearLayers(); poiMarkers = []; hlLine = null; state.poiSel = null; $('#map').classList.remove('poi-focus');
   if (P.status === 'loading') { note.textContent = 'Cargando lo que hay cerca…'; cats.innerHTML = ''; list.innerHTML = '<li class="sk" aria-hidden="true"><i></i><span></span><em></em></li>'.repeat(4); return; }
   if (P.status === 'error') { note.textContent = ''; cats.innerHTML = ''; list.innerHTML = ''; return; }
-  note.textContent = DEMO ? 'Dentro de 1 km a la redonda. Lugares de ejemplo; en la versión en línea salen de OpenStreetMap.' : 'Dentro de 1 km a la redonda, según OpenStreetMap.';
+  note.textContent = (DEMO || !useServer) ? 'Dentro de 1 km a la redonda. Lugares de ejemplo; con la hoja conectada salen de OpenStreetMap.' : 'Dentro de 1 km a la redonda, según OpenStreetMap.';
   var present = {}; P.items.forEach(function (i) { present[i.cat] = (present[i.cat] || 0) + 1; });
   cats.innerHTML = Object.keys(CATS).filter(function (k) { return present[k]; }).map(function (k) {
     return '<span class="cat" style="--c:' + CATS[k].c + '"><i></i>' + CATS[k].n + ' ' + present[k] + '</span>';
